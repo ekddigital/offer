@@ -47,7 +47,11 @@ export default function ContactForm() {
             stroke="currentColor"
             className="h-6 w-6 text-brand-success"
           >
-            <path strokeLinecap="round" strokeLinejoin="round" d="M4.5 12.75l6 6 9-13.5" />
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              d="M4.5 12.75l6 6 9-13.5"
+            />
           </svg>
         </div>
         <h3 className="text-lg font-semibold">Message Sent!</h3>

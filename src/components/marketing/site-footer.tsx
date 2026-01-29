@@ -42,7 +42,8 @@ export default function SiteFooter() {
               </span>
             </div>
             <p className="text-sm text-muted-foreground">
-              A.N.D. GROUP OF COMPANIES LLC — Direct sourcing from China&apos;s industrial partners.
+              A.N.D. GROUP OF COMPANIES LLC — Direct sourcing from China&apos;s
+              industrial partners.
             </p>
           </div>
 
@@ -68,7 +69,10 @@ export default function SiteFooter() {
 
         {/* Bottom bar */}
         <div className="mt-10 flex flex-col items-center justify-between gap-4 border-t border-border pt-6 text-sm text-muted-foreground md:flex-row">
-          <p>© {new Date().getFullYear()} A.N.D. GROUP OF COMPANIES LLC. All rights reserved.</p>
+          <p>
+            © {new Date().getFullYear()} A.N.D. GROUP OF COMPANIES LLC. All
+            rights reserved.
+          </p>
           <div className="flex items-center gap-4">
             <a
               href="https://wa.me"
