@@ -6,7 +6,7 @@ export default function HeroSection() {
           Unified Commerce Hub
         </p>
         <h2 className="text-4xl font-semibold leading-tight sm:text-5xl">
-          Discover every offer from
+          Discover every offer sourced directly from
           <span className="text-gradient from-brand-secondary to-brand-accent">
             {" "}
             A.N.D. GROUP OF COMPANIES{` `}
@@ -14,8 +14,8 @@ export default function HeroSection() {
         </h2>
         <p className="text-lg text-muted-foreground">
           A curated marketplace for heavy equipment, mobility, electronics, and
-          new ventures—organized for clarity and designed to scale as new
-          products launch.
+          new ventures—powered by verified Chinese industrial partners and a
+          unified procurement workflow.
         </p>
         <div className="flex flex-wrap gap-3">
           <button className="rounded-full bg-brand-secondary px-6 py-3 text-sm font-semibold text-brand-secondary-foreground shadow-sm transition hover:bg-brand-secondary-dark">
@@ -27,7 +27,7 @@ export default function HeroSection() {
         </div>
       </div>
 
-      <div className="rounded-3xl border border-border bg-gradient-brand-accent p-8 text-brand-primary-foreground shadow-lg">
+      <div className="section-shell bg-gradient-brand-accent p-8 text-brand-primary-foreground animate-float">
         <div className="space-y-4">
           <p className="text-xs uppercase tracking-[0.2em] text-brand-primary-foreground/80">
             Featured category
@@ -35,7 +35,7 @@ export default function HeroSection() {
           <h3 className="text-2xl font-semibold">Transport Materials</h3>
           <p className="text-sm text-brand-primary-foreground/90">
             Excavators, trucks, loaders, and enterprise logistics equipment
-            shipped directly from Chinese industrial partners.
+            shipped directly from China’s industrial base.
           </p>
           <div className="flex items-center gap-3">
             <span className="rounded-full bg-white/10 px-3 py-1 text-xs">
@@ -43,6 +43,9 @@ export default function HeroSection() {
             </span>
             <span className="rounded-full bg-white/10 px-3 py-1 text-xs">
               Heavy Equipment
+            </span>
+            <span className="rounded-full bg-white/10 px-3 py-1 text-xs">
+              Direct Supply
             </span>
           </div>
         </div>

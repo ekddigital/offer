@@ -1,32 +1,43 @@
-import "server-only";
-
 import { z } from "zod";
 
 const envSchema = z.object({
-  EKDSEND_API_KEY: z.string().min(1, "EKDSEND_API_KEY is required"),
-  EKDSEND_BASE_URL: z
-    .string()
-    .url()
-    .default("https://es.ekddigital.com/api/v1"),
-  EKDSEND_DEFAULT_FROM: z.string().email().optional(),
+  // Database
+  DATABASE_URL: z.string().min(1, "DATABASE_URL is required"),
 
+  // Mail API (EKDSend)
+  ANDOFFER_MAIL_API_KEY: z.string().optional(),
+  ANDOFFER_DEFAULT_FROM: z.string().email().default("noreply@offer.andgroupco.com"),
+
+  // Assets API
   ASSETS_API_KEY: z.string().min(1, "ASSETS_API_KEY is required"),
+  ASSETS_API_SECRET: z.string().optional(),
   ASSETS_BASE_URL: z
     .string()
     .url()
     .default("https://www.assets.andgroupco.com"),
-  ASSETS_CLIENT_ID: z.string().default("andgroupco"),
-  ASSETS_PROJECT_NAME: z.string().default("andoffer"),
+
+  // Auth
+  NEXTAUTH_URL: z.string().url().optional(),
+  NEXTAUTH_SECRET: z.string().optional(),
+  ANDOFFER_JWT_SECRET: z.string().optional(),
+
+  // Stripe
+  STRIPE_SECRET_KEY: z.string().optional(),
+  STRIPE_WEBHOOK_SECRET: z.string().optional(),
 });
 
 export type AppEnv = z.infer<typeof envSchema>;
 
 export const env = envSchema.parse({
-  EKDSEND_API_KEY: process.env.EKDSEND_API_KEY,
-  EKDSEND_BASE_URL: process.env.EKDSEND_BASE_URL,
-  EKDSEND_DEFAULT_FROM: process.env.EKDSEND_DEFAULT_FROM,
+  DATABASE_URL: process.env.DATABASE_URL,
+  ANDOFFER_MAIL_API_KEY: process.env.ANDOFFER_MAIL_API_KEY,
+  ANDOFFER_DEFAULT_FROM: process.env.ANDOFFER_DEFAULT_FROM,
   ASSETS_API_KEY: process.env.ASSETS_API_KEY,
+  ASSETS_API_SECRET: process.env.ASSETS_API_SECRET,
   ASSETS_BASE_URL: process.env.ASSETS_BASE_URL,
-  ASSETS_CLIENT_ID: process.env.ASSETS_CLIENT_ID,
-  ASSETS_PROJECT_NAME: process.env.ASSETS_PROJECT_NAME,
+  NEXTAUTH_URL: process.env.NEXTAUTH_URL,
+  NEXTAUTH_SECRET: process.env.NEXTAUTH_SECRET,
+  ANDOFFER_JWT_SECRET: process.env.ANDOFFER_JWT_SECRET,
+  STRIPE_SECRET_KEY: process.env.STRIPE_SECRET_KEY,
+  STRIPE_WEBHOOK_SECRET: process.env.STRIPE_WEBHOOK_SECRET,
 });

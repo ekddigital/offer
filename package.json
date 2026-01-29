@@ -6,10 +6,17 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "db:gen": "prisma generate --config prisma/prisma.config.ts",
+    "db:push": "prisma db push --config prisma/prisma.config.ts",
+    "db:studio": "prisma studio --config prisma/prisma.config.ts"
   },
   "dependencies": {
+    "@prisma/adapter-pg": "^7.3.0",
+    "@prisma/client": "^7.3.0",
+    "dotenv": "^17.2.3",
     "next": "16.1.6",
+    "pg": "^8.17.2",
     "react": "19.2.3",
     "react-dom": "19.2.3",
     "zod": "^3.24.1"
@@ -17,11 +24,13 @@
   "devDependencies": {
     "@tailwindcss/postcss": "^4",
     "@types/node": "^20",
+    "@types/pg": "^8.16.0",
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "babel-plugin-react-compiler": "1.0.0",
     "eslint": "^9",
     "eslint-config-next": "16.1.6",
+    "prisma": "^7.3.0",
     "tailwindcss": "^4",
     "typescript": "^5"
   }
