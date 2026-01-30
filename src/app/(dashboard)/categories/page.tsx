@@ -1,7 +1,13 @@
 import Link from "next/link";
 import { db } from "@/lib/db";
+import type { Category } from "@prisma/client";
 
 export const dynamic = "force-dynamic";
+
+type CategoryWithRelations = Category & {
+  parent: { name: string } | null;
+  _count: { products: number; children: number };
+};
 
 export default async function CategoriesPage() {
   const categories = await db.category.findMany({
@@ -39,20 +45,30 @@ export default async function CategoriesPage() {
           <tbody className="divide-y divide-border">
             {categories.length === 0 && (
               <tr>
-                <td colSpan={6} className="px-4 py-8 text-center text-muted-foreground">
+                <td
+                  colSpan={6}
+                  className="px-4 py-8 text-center text-muted-foreground"
+                >
                   No categories yet.
                 </td>
               </tr>
             )}
-            {categories.map((c) => (
+            {categories.map((c: CategoryWithRelations) => (
               <tr key={c.id} className="hover:bg-muted/30">
                 <td className="px-4 py-3 font-medium">
-                  <Link href={`/categories/${c.id}`} className="text-brand-secondary hover:underline">
+                  <Link
+                    href={`/categories/${c.id}`}
+                    className="text-brand-secondary hover:underline"
+                  >
                     {c.name}
                   </Link>
                 </td>
-                <td className="px-4 py-3 text-muted-foreground font-mono text-xs">{c.slug}</td>
-                <td className="px-4 py-3 text-muted-foreground">{c.parent?.name ?? "—"}</td>
+                <td className="px-4 py-3 text-muted-foreground font-mono text-xs">
+                  {c.slug}
+                </td>
+                <td className="px-4 py-3 text-muted-foreground">
+                  {c.parent?.name ?? "—"}
+                </td>
                 <td className="px-4 py-3 text-center">{c._count.products}</td>
                 <td className="px-4 py-3 text-center">{c._count.children}</td>
                 <td className="px-4 py-3 text-right">{c.sortOrder}</td>
