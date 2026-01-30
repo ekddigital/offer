@@ -14,6 +14,8 @@ type FormData = {
   currency: string;
   srcCountry: string;
   featured: boolean;
+  whatsappContact: string;
+  whatsappGroup: string;
   categoryId: string;
   supplierId: string;
 };
@@ -40,6 +42,8 @@ export default function ProductForm({ categories, suppliers, initial }: Props) {
     currency: initial?.currency ?? "USD",
     srcCountry: initial?.srcCountry ?? "CN",
     featured: initial?.featured ?? false,
+    whatsappContact: initial?.whatsappContact ?? "",
+    whatsappGroup: initial?.whatsappGroup ?? "",
     categoryId: initial?.categoryId ?? "",
     supplierId: initial?.supplierId ?? "",
   });
@@ -53,6 +57,8 @@ export default function ProductForm({ categories, suppliers, initial }: Props) {
     startTransition(async () => {
       const payload = {
         ...form,
+        whatsappContact: form.whatsappContact || undefined,
+        whatsappGroup: form.whatsappGroup || undefined,
         price: form.price ? parseFloat(form.price) : undefined,
         categoryId: form.categoryId || undefined,
         supplierId: form.supplierId || undefined,
@@ -257,6 +263,52 @@ export default function ProductForm({ categories, suppliers, initial }: Props) {
         />
       </div>
 
+      {/* WhatsApp Contact Section */}
+      <div className="space-y-4 rounded-lg border border-border bg-card p-5">
+        <h3 className="text-sm font-semibold text-foreground">
+          WhatsApp Integration
+        </h3>
+        <p className="text-xs text-muted-foreground">
+          Add WhatsApp contact options for buyers interested in this product.
+        </p>
+
+        <div className="grid gap-4 md:grid-cols-2">
+          {/* WhatsApp Contact */}
+          <div>
+            <label className="mb-1.5 block text-sm font-medium">
+              Direct WhatsApp Number
+            </label>
+            <input
+              type="tel"
+              placeholder="+1234567890"
+              value={form.whatsappContact}
+              onChange={(e) => updateField("whatsappContact", e.target.value)}
+              className="w-full rounded-lg border border-input bg-background px-4 py-2.5 text-sm focus:border-brand-secondary focus:outline-none focus:ring-2 focus:ring-brand-secondary/20"
+            />
+            <p className="mt-1 text-xs text-muted-foreground">
+              Include country code (e.g., +1 for US)
+            </p>
+          </div>
+
+          {/* WhatsApp Group */}
+          <div>
+            <label className="mb-1.5 block text-sm font-medium">
+              WhatsApp Group Link
+            </label>
+            <input
+              type="url"
+              placeholder="https://chat.whatsapp.com/..."
+              value={form.whatsappGroup}
+              onChange={(e) => updateField("whatsappGroup", e.target.value)}
+              className="w-full rounded-lg border border-input bg-background px-4 py-2.5 text-sm focus:border-brand-secondary focus:outline-none focus:ring-2 focus:ring-brand-secondary/20"
+            />
+            <p className="mt-1 text-xs text-muted-foreground">
+              Buyers can join this group for discussions
+            </p>
+          </div>
+        </div>
+      </div>
+
       {/* Featured */}
       <div className="flex items-center gap-3">
         <button
@@ -270,7 +322,12 @@ export default function ProductForm({ categories, suppliers, initial }: Props) {
             className={`absolute left-0.5 top-0.5 h-5 w-5 rounded-full bg-white shadow transition-transform ${form.featured ? "translate-x-5" : "translate-x-0"}`}
           />
         </button>
-        <span className="text-sm font-medium">Featured Product</span>
+        <div>
+          <span className="text-sm font-medium">Featured Product</span>
+          <p className="text-xs text-muted-foreground">
+            Featured products appear prominently on the homepage
+          </p>
+        </div>
       </div>
 
       {/* Actions */}

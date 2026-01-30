@@ -1,53 +1,95 @@
+import Image from "next/image";
+import Link from "next/link";
+
+const heroImages = [
+  {
+    src: "/products/excavator-kinds.JPG",
+    alt: "Excavator lineup",
+  },
+  {
+    src: "/products/excavator-production-site.JPG",
+    alt: "Excavators at production site",
+  },
+  {
+    src: "/products/excavator.JPG",
+    alt: "Excavator on site",
+  },
+  {
+    src: "/products/trucks.JPG",
+    alt: "Industrial trucks",
+  },
+  {
+    src: "/products/iphone.png",
+    alt: "iPhone devices",
+  },
+  {
+    src: "/products/samsung-galaxy-ultra-s24-vs-iphone.png",
+    alt: "Mobile device lineup",
+  },
+];
+
 export default function HeroSection() {
   return (
     <section className="grid gap-10 lg:grid-cols-[1.1fr_0.9fr]">
       <div className="space-y-6">
         <p className="text-sm font-semibold uppercase tracking-[0.24em] text-brand-secondary">
-          Unified Commerce Hub
+          AND Offer Portal
         </p>
         <h2 className="text-4xl font-semibold leading-tight sm:text-5xl">
-          Discover every offer sourced directly from
+          Source heavy equipment and electronics through
           <span className="text-gradient from-brand-secondary to-brand-accent">
             {" "}
-            A.N.D. GROUP OF COMPANIES{` `}
+            AND Offer{` `}
           </span>
         </h2>
         <p className="text-lg text-muted-foreground">
-          A curated marketplace for heavy equipment, mobility, electronics, and
-          new ventures—powered by verified Chinese industrial partners and a
-          unified procurement workflow.
+          The product marketplace for A.N.D. GROUP OF COMPANIES LLC—connecting
+          you to verified Chinese suppliers for transport materials, mobility
+          tech, and high-volume equipment.
         </p>
         <div className="flex flex-wrap gap-3">
-          <button className="rounded-full bg-brand-secondary px-6 py-3 text-sm font-semibold text-brand-secondary-foreground shadow-sm transition hover:bg-brand-secondary-dark">
+          <Link
+            href="/products"
+            className="rounded-lg border-2 border-ecommerce-primary bg-ecommerce-primary px-6 py-3 text-sm font-semibold text-ecommerce-primary-text shadow-lg transition hover:bg-ecommerce-primary-hover hover:border-ecommerce-primary-hover hover:shadow-xl"
+          >
             Explore Offers
-          </button>
-          <button className="rounded-full border border-brand-primary/20 px-6 py-3 text-sm font-semibold text-brand-primary transition hover:border-brand-primary/40 hover:bg-brand-primary/5">
+          </Link>
+          <Link
+            href="/contact"
+            className="rounded-lg border-2 border-ecommerce-secondary-border bg-ecommerce-secondary px-6 py-3 text-sm font-semibold text-ecommerce-secondary-text transition hover:bg-ecommerce-secondary-hover hover:border-ecommerce-secondary-border"
+          >
             Partner With Us
-          </button>
+          </Link>
         </div>
       </div>
 
-      <div className="section-shell bg-gradient-brand-accent p-8 text-brand-primary-foreground animate-float">
-        <div className="space-y-4">
-          <p className="text-xs uppercase tracking-[0.2em] text-brand-primary-foreground/80">
-            Featured category
+      <div className="space-y-5">
+        <div className="grid grid-cols-2 gap-3">
+          {heroImages.map((image, index) => (
+            <div
+              key={image.src}
+              className="relative h-40 overflow-hidden rounded-xl border border-border bg-card shadow-sm sm:h-48"
+            >
+              <Image
+                src={image.src}
+                alt={image.alt}
+                fill
+                priority={index < 2}
+                sizes="(max-width: 768px) 50vw, 300px"
+                className="object-cover"
+              />
+            </div>
+          ))}
+        </div>
+        <div className="rounded-2xl border border-brand-primary/10 bg-brand-primary/5 p-5">
+          <p className="text-xs font-semibold uppercase tracking-[0.2em] text-brand-primary">
+            A.N.D. GROUP OF COMPANIES LLC
           </p>
-          <h3 className="text-2xl font-semibold">Transport Materials</h3>
-          <p className="text-sm text-brand-primary-foreground/90">
-            Excavators, trucks, loaders, and enterprise logistics equipment
-            shipped directly from China’s industrial base.
+          <h3 className="mt-2 text-lg font-semibold">Verified sourcing hub</h3>
+          <p className="mt-1 text-sm text-muted-foreground">
+            Consolidated procurement, logistics support, and direct factory
+            access—so every offer is faster, clearer, and traceable.
           </p>
-          <div className="flex items-center gap-3">
-            <span className="rounded-full bg-white/10 px-3 py-1 text-xs">
-              Enterprise
-            </span>
-            <span className="rounded-full bg-white/10 px-3 py-1 text-xs">
-              Heavy Equipment
-            </span>
-            <span className="rounded-full bg-white/10 px-3 py-1 text-xs">
-              Direct Supply
-            </span>
-          </div>
         </div>
       </div>
     </section>

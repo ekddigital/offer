@@ -104,55 +104,88 @@ export function generateBrandVariables(): Record<string, string> {
     "--dashboard-sidebar-text-active": THEME_COLORS.dashboard.sidebarTextActive,
     "--dashboard-sidebar-accent": THEME_COLORS.dashboard.sidebarAccent,
     "--dashboard-sidebar-border": THEME_COLORS.dashboard.sidebarBorder,
+    // E-commerce specific colors
+    "--ecommerce-price-highlight": THEME_COLORS.ecommerce.priceHighlight,
+    "--ecommerce-price-highlight-dark":
+      THEME_COLORS.ecommerce.priceHighlightDark,
+    "--ecommerce-sale-badge": THEME_COLORS.ecommerce.saleBadge,
+    "--ecommerce-sale-badge-text": THEME_COLORS.ecommerce.saleBadgeText,
+    "--ecommerce-rating-star": THEME_COLORS.ecommerce.ratingStar,
+    "--ecommerce-rating-empty": THEME_COLORS.ecommerce.ratingEmpty,
   };
 }
 
 export function generateBaseUIVariables(): Record<string, string> {
   return {
-    "--background": "220 40% 98%",
-    "--foreground": hexToHSLString(THEME_COLORS.primary.dark),
-    "--card": "0 0% 100%",
-    "--card-foreground": hexToHSLString(THEME_COLORS.primary.dark),
+    // ☀️ LIGHT MODE - Clean, Trust-Focused, Sales-Friendly
+    // Backgrounds
+    "--background": "210 40% 98%", // #F8FAFC - Main background
+    "--foreground": hexToHSLString(THEME_COLORS.neutral[900]), // #0B1220 - Primary text
+    "--card": "0 0% 100%", // #FFFFFF - Cards
+    "--card-foreground": hexToHSLString(THEME_COLORS.neutral[900]),
     "--popover": "0 0% 100%",
-    "--popover-foreground": hexToHSLString(THEME_COLORS.primary.dark),
-    "--primary": hexToHSLString(THEME_COLORS.primary.DEFAULT),
+    "--popover-foreground": hexToHSLString(THEME_COLORS.neutral[900]),
+
+    // Primary actions (Buy / Checkout)
+    "--primary": hexToHSLString(THEME_COLORS.primary.DEFAULT), // #0B1220
     "--primary-foreground": "0 0% 100%",
-    "--secondary": hexToHSLString(THEME_COLORS.secondary.DEFAULT),
-    "--secondary-foreground": "0 0% 100%",
-    "--accent": hexToHSLString(THEME_COLORS.accent.DEFAULT),
-    "--accent-foreground": "230 20% 10%",
-    "--muted": adjustLightness(THEME_COLORS.neutral[200], 6),
-    "--muted-foreground": adjustLightness(THEME_COLORS.neutral[600], 6),
-    "--destructive": hexToHSLString(THEME_COLORS.error.DEFAULT),
-    "--destructive-foreground": "0 0% 98%",
-    "--border": adjustLightness(THEME_COLORS.neutral[200], 0),
-    "--input": adjustLightness(THEME_COLORS.neutral[200], 0),
-    "--ring": hexToHSLString(THEME_COLORS.secondary.DEFAULT),
+
+    // Secondary actions
+    "--secondary": hexToHSLString(THEME_COLORS.secondary.DEFAULT), // #22D3EE
+    "--secondary-foreground": hexToHSLString(THEME_COLORS.secondary.foreground),
+
+    // Accent (Price highlights)
+    "--accent": hexToHSLString(THEME_COLORS.accent.DEFAULT), // #0D9488
+    "--accent-foreground": "0 0% 100%",
+
+    // Muted / Borders
+    "--muted": "214 32% 95%", // #F1F5F9 - Alt section
+    "--muted-foreground": hexToHSLString(THEME_COLORS.neutral[500]), // #64748B
+    "--border": "220 13% 86%", // #D1D5DB - Default border (higher contrast)
+    "--input": "220 13% 80%", // #C0C7D2 - Input border (clearer)
+    "--ring": hexToHSLString(THEME_COLORS.info.light), // #0284C7 - Focus
+
+    // Destructive
+    "--destructive": hexToHSLString(THEME_COLORS.error.light), // #DC2626
+    "--destructive-foreground": "0 0% 100%",
+
     "--radius": "0.6rem",
   };
 }
 
 export function generateDarkModeVariables(): Record<string, string> {
   return {
-    "--background": "220 30% 8%",
-    "--foreground": "220 20% 96%",
-    "--card": "220 30% 12%",
-    "--card-foreground": "220 20% 96%",
-    "--popover": "220 30% 12%",
-    "--popover-foreground": "220 20% 96%",
-    "--primary": hexToHSLString(THEME_COLORS.primary.light),
-    "--primary-foreground": "220 30% 8%",
-    "--secondary": hexToHSLString(THEME_COLORS.secondary.light),
-    "--secondary-foreground": "220 30% 8%",
-    "--accent": hexToHSLString(THEME_COLORS.accent.light),
-    "--accent-foreground": "230 20% 10%",
-    "--muted": "220 20% 16%",
-    "--muted-foreground": "220 12% 65%",
-    "--destructive": "0 62% 40%",
-    "--destructive-foreground": "0 0% 98%",
-    "--border": "220 20% 18%",
-    "--input": "220 20% 18%",
-    "--ring": hexToHSLString(THEME_COLORS.secondary.light),
+    // 🌙 DARK MODE - Modern, Premium E-commerce
+    // Backgrounds
+    "--background": "216 50% 7%", // #0B1220 - Main background
+    "--foreground": "0 0% 100%", // #FFFFFF - Primary text
+    "--card": "215 28% 12%", // #111827 - Cards/sections
+    "--card-foreground": "210 20% 98%", // #F9FAFB
+    "--popover": "215 28% 12%",
+    "--popover-foreground": "210 20% 98%",
+
+    // Primary actions (Buy / Add to Cart - Cyan)
+    "--primary": hexToHSLString(THEME_COLORS.secondary[200]), // #A5F3FC - Button bg
+    "--primary-foreground": hexToHSLString(THEME_COLORS.primary.DEFAULT), // #0B1220
+
+    // Secondary actions
+    "--secondary": hexToHSLString(THEME_COLORS.neutral[700]), // #1F2937
+    "--secondary-foreground": "210 20% 90%", // #E5E7EB
+
+    // Accent (Price highlights - Light teal)
+    "--accent": hexToHSLString(THEME_COLORS.ecommerce.priceHighlightDark), // #99F6E4
+    "--accent-foreground": hexToHSLString(THEME_COLORS.primary.DEFAULT),
+
+    // Muted / Borders
+    "--muted": "217 33% 17%", // #1F2937 - Elevated surfaces
+    "--muted-foreground": "218 11% 65%", // #9CA3AF - Muted text
+    "--border": "215 25% 28%", // #334155 - Default border (visible)
+    "--input": "215 25% 32%", // #3B4A5C - Input border (clearer)
+    "--ring": hexToHSLString(THEME_COLORS.secondary[200]), // #A5F3FC - Focus
+
+    // Destructive
+    "--destructive": hexToHSLString(THEME_COLORS.error.DEFAULT), // #EF4444
+    "--destructive-foreground": "0 0% 100%",
   };
 }
 

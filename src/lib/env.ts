@@ -6,7 +6,10 @@ const envSchema = z.object({
 
   // Mail API (EKDSend)
   ANDOFFER_MAIL_API_KEY: z.string().optional(),
-  ANDOFFER_DEFAULT_FROM: z.string().email().default("noreply@offer.andgroupco.com"),
+  ANDOFFER_DEFAULT_FROM: z
+    .string()
+    .email()
+    .default("noreply@offer.andgroupco.com"),
 
   // Assets API
   ASSETS_API_KEY: z.string().min(1, "ASSETS_API_KEY is required"),
@@ -19,6 +22,7 @@ const envSchema = z.object({
   // Auth
   NEXTAUTH_URL: z.string().url().optional(),
   NEXTAUTH_SECRET: z.string().optional(),
+  AUTH_SECRET: z.string().optional(),
   ANDOFFER_JWT_SECRET: z.string().optional(),
 
   // Stripe
@@ -37,6 +41,7 @@ export const env = envSchema.parse({
   ASSETS_BASE_URL: process.env.ASSETS_BASE_URL,
   NEXTAUTH_URL: process.env.NEXTAUTH_URL,
   NEXTAUTH_SECRET: process.env.NEXTAUTH_SECRET,
+  AUTH_SECRET: process.env.AUTH_SECRET,
   ANDOFFER_JWT_SECRET: process.env.ANDOFFER_JWT_SECRET,
   STRIPE_SECRET_KEY: process.env.STRIPE_SECRET_KEY,
   STRIPE_WEBHOOK_SECRET: process.env.STRIPE_WEBHOOK_SECRET,

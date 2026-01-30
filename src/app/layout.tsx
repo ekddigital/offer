@@ -3,6 +3,9 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { BrandProvider } from "@/components/providers/brand-provider";
 
+// Ensure this layout runs in Node.js runtime, not Edge
+export const runtime = "nodejs";
+
 const geistSans = Geist({
   variable: "--font-geist-sans",
   subsets: ["latin"],
@@ -14,9 +17,9 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "A.N.D. Offerings",
+  title: "AND Offer",
   description:
-    "Unified portal for A.N.D. GROUP OF COMPANIES LLC products and services.",
+    "Product portal for A.N.D. GROUP OF COMPANIES LLC products and services.",
 };
 
 export default function RootLayout({
@@ -25,7 +28,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >

@@ -13,11 +13,8 @@ export default function OfferCategories() {
 
       <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-4">
         {offerCategories.map((card) => (
-          <div
-            key={card.title}
-            className={`rounded-2xl border border-border p-6 shadow-sm transition hover:-translate-y-1 hover:shadow-md ${card.tone}`}
-          >
-            <h4 className="text-lg font-semibold text-brand-primary">
+          <div key={card.title} className={`offer-card ${card.tone}`}>
+            <h4 className="text-lg font-semibold text-foreground">
               {card.title}
             </h4>
             <p className="mt-2 text-sm text-muted-foreground">
@@ -25,15 +22,12 @@ export default function OfferCategories() {
             </p>
             <div className="mt-4 flex flex-wrap gap-2">
               {card.highlights.map((highlight) => (
-                <span
-                  key={highlight}
-                  className="rounded-full bg-white/70 px-2.5 py-1 text-xs font-medium text-brand-primary"
-                >
+                <span key={highlight} className="offer-chip">
                   {highlight}
                 </span>
               ))}
             </div>
-            <button className="mt-6 inline-flex items-center gap-2 text-sm font-semibold text-brand-secondary hover:text-brand-secondary-dark">
+            <button className="mt-6 inline-flex items-center gap-2 rounded-lg border-2 border-ecommerce-secondary-border bg-ecommerce-secondary px-4 py-2 text-sm font-semibold text-ecommerce-secondary-text transition hover:bg-ecommerce-secondary-hover hover:border-ecommerce-secondary-border">
               View offers
               <span aria-hidden>→</span>
             </button>

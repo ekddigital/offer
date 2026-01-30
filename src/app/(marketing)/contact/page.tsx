@@ -5,9 +5,9 @@ import WhatsAppBtn from "@/components/marketing/whatsapp-btn";
 
 export default function ContactPage() {
   return (
-    <div className="min-h-screen bg-background text-foreground">
+    <div className="flex min-h-screen flex-col bg-background text-foreground">
       <SiteHeader />
-      <main className="mx-auto max-w-6xl px-6 py-16">
+      <main className="mx-auto w-full max-w-6xl flex-1 px-6 py-16">
         <div className="grid gap-12 lg:grid-cols-2">
           {/* Info */}
           <div className="space-y-6">

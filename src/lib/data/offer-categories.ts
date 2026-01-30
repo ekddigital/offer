@@ -16,27 +16,27 @@ export const offerCategories = offerCategoriesSchema.parse([
     title: "Transport Materials",
     description:
       "Excavators, trucks, cranes, and logistics equipment sourced directly from China.",
-    tone: "bg-brand-primary-50/80 dark:bg-brand-primary/15",
+    tone: "offer-card--primary",
     highlights: ["Industrial suppliers", "Bulk pricing", "Fast shipping"],
   },
   {
     title: "Mobile & Electronics",
     description: "iPhone 17 series, accessories, and smart devices at scale.",
-    tone: "bg-brand-secondary-50/80 dark:bg-brand-secondary/15",
+    tone: "offer-card--secondary",
     highlights: ["Authentic supply", "Warranty support", "Volume discounts"],
   },
   {
     title: "Construction Supply",
     description:
       "Safety gear, tools, and building materials for large projects.",
-    tone: "bg-brand-accent-50/80 dark:bg-brand-accent/15",
+    tone: "offer-card--accent",
     highlights: ["Certified materials", "Global freight", "Project bundles"],
   },
   {
     title: "Emerging Offers",
     description:
       "New partnerships and exclusive enterprise bundles coming soon.",
-    tone: "bg-card",
+    tone: "offer-card--neutral",
     highlights: ["Early access", "Pilot programs", "Custom sourcing"],
   },
 ]);

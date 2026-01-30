@@ -2,26 +2,19 @@ import Link from "next/link";
 
 const footerLinks = [
   {
-    title: "Products",
+    title: "Portal",
     links: [
-      { label: "Transport Materials", href: "/offers/transport" },
-      { label: "Mobile & Electronics", href: "/offers/electronics" },
-      { label: "Construction Supply", href: "/offers/construction" },
+      { label: "Products", href: "/products" },
+      { label: "Categories", href: "/categories" },
+      { label: "Suppliers", href: "/suppliers" },
+      { label: "Inquiries", href: "/inquiries" },
     ],
   },
   {
     title: "Company",
     links: [
-      { label: "About Us", href: "/about" },
       { label: "Contact", href: "/contact" },
-      { label: "Suppliers", href: "/suppliers" },
-    ],
-  },
-  {
-    title: "Legal",
-    links: [
-      { label: "Privacy Policy", href: "/privacy" },
-      { label: "Terms of Service", href: "/terms" },
+      { label: "WhatsApp Group", href: "/contact" },
     ],
   },
 ];
@@ -30,27 +23,42 @@ export default function SiteFooter() {
   return (
     <footer className="border-t border-border bg-card">
       <div className="mx-auto max-w-6xl px-6 py-12">
-        <div className="grid gap-8 md:grid-cols-4">
-          {/* Brand */}
-          <div className="space-y-4">
+        <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-4">
+          {/* Brand - spans 2 columns on medium screens */}
+          <div className="space-y-4 md:col-span-2 lg:col-span-1">
             <div className="flex items-center gap-2">
               <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-brand text-sm font-bold text-white">
                 A
               </div>
               <span className="text-lg font-bold text-brand-primary dark:text-foreground">
-                ANDOffer
+                AND Offer
               </span>
             </div>
             <p className="text-sm text-muted-foreground">
-              A.N.D. GROUP OF COMPANIES LLC — Direct sourcing from China&apos;s
-              industrial partners.
+              The product portal for A.N.D. GROUP OF COMPANIES LLC. Direct
+              sourcing from China&apos;s industrial partners.
             </p>
+          </div>
+
+          {/* Contact Info */}
+          <div className="space-y-3">
+            <h4 className="text-sm font-semibold text-foreground">Head Office</h4>
+            <div className="space-y-1 text-sm text-muted-foreground">
+              <p>Japan Freeway, Jacob Town</p>
+              <p>Adjacent Lonestar, Paynesville</p>
+              <p>Montserrado County, Liberia</p>
+            </div>
+            <div className="mt-3 space-y-1 text-sm text-muted-foreground">
+              <p>+86 185 0683 2159</p>
+              <p>+231 889 233 833</p>
+              <p>contact@andgroupco.com</p>
+            </div>
           </div>
 
           {/* Links */}
           {footerLinks.map((group) => (
             <div key={group.title} className="space-y-3">
-              <h4 className="text-sm font-semibold">{group.title}</h4>
+              <h4 className="text-sm font-semibold text-foreground">{group.title}</h4>
               <ul className="space-y-2">
                 {group.links.map((link) => (
                   <li key={link.href}>

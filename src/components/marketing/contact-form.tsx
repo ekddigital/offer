@@ -60,7 +60,7 @@ export default function ContactForm() {
         </p>
         <button
           onClick={() => setSent(false)}
-          className="mt-4 text-sm font-medium text-brand-secondary hover:underline"
+          className="mt-4 rounded-lg border-2 border-ecommerce-secondary-border bg-ecommerce-secondary px-4 py-2 text-sm font-medium text-ecommerce-secondary-text transition hover:bg-ecommerce-secondary-hover"
         >
           Send another message
         </button>
@@ -123,7 +123,7 @@ export default function ContactForm() {
       <button
         type="submit"
         disabled={isPending}
-        className="w-full rounded-lg bg-brand-secondary px-6 py-3 text-sm font-semibold text-white transition hover:bg-brand-secondary-dark disabled:opacity-50"
+        className="w-full rounded-lg border-2 border-ecommerce-primary bg-ecommerce-primary px-6 py-3 text-sm font-semibold text-ecommerce-primary-text shadow-md transition hover:bg-ecommerce-primary-hover hover:border-ecommerce-primary-hover hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed"
       >
         {isPending ? "Sending..." : "Send Inquiry"}
       </button>

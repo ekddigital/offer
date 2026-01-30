@@ -20,6 +20,8 @@ export const productCreateSchema = z.object({
   currency: z.string().length(3).default("USD"),
   srcCountry: z.string().length(2).default("CN"),
   featured: z.boolean().default(false),
+  whatsappContact: z.string().max(20).optional(),
+  whatsappGroup: z.string().url().optional(),
   categoryId: z.string().cuid().optional(),
   supplierId: z.string().cuid().optional(),
 });

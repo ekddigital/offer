@@ -17,6 +17,7 @@ datasource db {
 // ============================================================================
 
 enum Role {
+    SUPER_ADMIN
     ADMIN
     STAFF
     BUYER
@@ -45,17 +46,60 @@ enum AssetType {
 // ============================================================================
 
 model User {
-    id        String   @id @default(cuid())
-    email     String   @unique
-    name      String?
-    pwdHash   String?
-    role      Role     @default(BUYER)
-    createdAt DateTime @default(now())
-    updatedAt DateTime @updatedAt
+    id            String    @id @default(cuid())
+    email         String    @unique
+    name          String?
+    pwdHash       String?
+    role          Role      @default(BUYER)
+    emailVerified DateTime?
+    image         String?
+    createdAt     DateTime  @default(now())
+    updatedAt     DateTime  @updatedAt
 
     inquiries Inquiry[]
+    accounts  Account[]
+    sessions  Session[]
 
     @@map("users")
+}
+
+model Account {
+    id                String  @id @default(cuid())
+    userId            String
+    type              String
+    provider          String
+    providerAccountId String
+    refresh_token     String? @db.Text
+    access_token      String? @db.Text
+    expires_at        Int?
+    token_type        String?
+    scope             String?
+    id_token          String? @db.Text
+    session_state     String?
+
+    user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+    @@unique([provider, providerAccountId])
+    @@map("accounts")
+}
+
+model Session {
+    id           String   @id @default(cuid())
+    sessionToken String   @unique
+    userId       String
+    expires      DateTime
+    user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+    @@map("sessions")
+}
+
+model VerificationToken {
+    identifier String
+    token      String   @unique
+    expires    DateTime
+
+    @@unique([identifier, token])
+    @@map("verification_tokens")
 }
 
 // ============================================================================
@@ -113,8 +157,13 @@ model Product {
     currency    String   @default("USD")
     srcCountry  String   @default("CN")
     featured    Boolean  @default(false)
-    createdAt   DateTime @default(now())
-    updatedAt   DateTime @updatedAt
+
+    // WhatsApp contact options
+    whatsappContact String? // Direct WhatsApp number for this product
+    whatsappGroup   String? // WhatsApp group link for this product
+
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
 
     categoryId String?
     category   Category? @relation(fields: [categoryId], references: [id])
