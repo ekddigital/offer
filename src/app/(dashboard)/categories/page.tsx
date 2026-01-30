@@ -12,7 +12,7 @@ export default async function CategoriesPage() {
     },
   });
 
-  type CategoryWithRelations = typeof categories[number];
+  type CategoryWithRelations = (typeof categories)[number];
 
   return (
     <div className="space-y-6">

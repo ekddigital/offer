@@ -47,6 +47,9 @@ export default async function DashboardPage() {
     }),
   ]);
 
+  type ProductWithCategory = typeof recentProducts[number];
+  type InquiryType = typeof recentInquiries[number];
+
   const isAdmin =
     session.user.role === "SUPER_ADMIN" || session.user.role === "ADMIN";
 
@@ -173,7 +176,7 @@ export default async function DashboardPage() {
           </div>
           <div className="space-y-3">
             {recentProducts.length > 0 ? (
-              recentProducts.map((product) => (
+              recentProducts.map((product: ProductWithCategory) => (
                 <a
                   key={product.id}
                   href={`/products/${product.id}`}
@@ -221,7 +224,7 @@ export default async function DashboardPage() {
           </div>
           <div className="space-y-3">
             {recentInquiries.length > 0 ? (
-              recentInquiries.map((inquiry) => (
+              recentInquiries.map((inquiry: InquiryType) => (
                 <div
                   key={inquiry.id}
                   className="rounded-md border border-border bg-background/50 p-3"

@@ -13,6 +13,8 @@ export default async function ProductsPage() {
     },
   });
 
+  type ProductWithRelations = typeof products[number];
+
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
@@ -48,7 +50,7 @@ export default async function ProductsPage() {
                 </td>
               </tr>
             )}
-            {products.map((p) => (
+            {products.map((p: ProductWithRelations) => (
               <tr key={p.id} className="hover:bg-muted/30">
                 <td className="px-4 py-3 font-medium">
                   <Link

@@ -9,6 +9,8 @@ export default async function SuppliersPage() {
     include: { _count: { select: { products: true } } },
   });
 
+  type SupplierWithCount = typeof suppliers[number];
+
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
@@ -44,7 +46,7 @@ export default async function SuppliersPage() {
                 </td>
               </tr>
             )}
-            {suppliers.map((s) => (
+            {suppliers.map((s: SupplierWithCount) => (
               <tr key={s.id} className="hover:bg-muted/30">
                 <td className="px-4 py-3 font-medium">
                   <Link

@@ -19,6 +19,8 @@ export default async function InquiriesPage() {
     },
   });
 
+  type InquiryWithProduct = typeof inquiries[number];
+
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
@@ -53,7 +55,7 @@ export default async function InquiriesPage() {
                 </td>
               </tr>
             )}
-            {inquiries.map((inq) => (
+            {inquiries.map((inq: InquiryWithProduct) => (
               <tr key={inq.id} className="hover:bg-muted/30">
                 <td className="px-4 py-3 font-medium">
                   <Link
