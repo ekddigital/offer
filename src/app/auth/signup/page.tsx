@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import Image from "next/image";
+import { BrandLogo } from "@/components/ui/brand-logo";
 
 export default function SignUpPage() {
   const router = useRouter();
@@ -72,26 +72,7 @@ export default function SignUpPage() {
         {/* Card Container */}
         <div className="rounded-2xl border-2 border-ecommerce-border bg-background p-8 shadow-2xl">
           <div className="text-center">
-            <div className="mx-auto flex h-16 w-16 items-center justify-center">
-              <div className="relative h-16 w-16">
-                <Image
-                  src="/logo-dark.png"
-                  alt="AND Offer Logo"
-                  width={64}
-                  height={64}
-                  className="object-contain dark:hidden"
-                  priority
-                />
-                <Image
-                  src="/logo.png"
-                  alt="AND Offer Logo"
-                  width={64}
-                  height={64}
-                  className="hidden object-contain dark:block"
-                  priority
-                />
-              </div>
-            </div>
+            <BrandLogo size={64} wrapperClassName="mx-auto rounded-xl p-2" />
             <h2 className="mt-6 text-3xl font-bold text-foreground">
               Create your account
             </h2>

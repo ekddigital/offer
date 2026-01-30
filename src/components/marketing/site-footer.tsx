@@ -1,5 +1,5 @@
 import Link from "next/link";
-import Image from "next/image";
+import { BrandLogo } from "@/components/ui/brand-logo";
 
 const footerLinks = [
   {
@@ -28,22 +28,7 @@ export default function SiteFooter() {
           {/* Brand - spans 2 columns on medium screens */}
           <div className="space-y-4 md:col-span-2 lg:col-span-1">
             <div className="flex items-center gap-3">
-              <div className="relative h-10 w-10">
-                <Image
-                  src="/logo-dark.png"
-                  alt="AND Offer Logo"
-                  width={40}
-                  height={40}
-                  className="object-contain dark:hidden"
-                />
-                <Image
-                  src="/logo.png"
-                  alt="AND Offer Logo"
-                  width={40}
-                  height={40}
-                  className="hidden object-contain dark:block"
-                />
-              </div>
+              <BrandLogo size={40} />
               <div className="leading-tight">
                 <span className="text-xl font-bold text-brand-primary dark:text-foreground">
                   AND Offer

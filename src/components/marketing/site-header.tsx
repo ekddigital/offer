@@ -1,7 +1,8 @@
 import Link from "next/link";
-import Image from "next/image";
 import { auth } from "@/lib/auth";
 import { ThemeToggle } from "@/components/ui/theme-toggle";
+import { BrandLogo } from "@/components/ui/brand-logo";
+import { UserMenu } from "@/components/ui/user-menu";
 
 const navLinks = [
   { label: "Home", href: "/" },
@@ -13,66 +14,16 @@ export default async function SiteHeader() {
   const session = await auth();
 
   return (
-    <header className="border-b border-border bg-card/90 backdrop-blur">
+    <header className="relative z-50 border-b border-border bg-card/90 backdrop-blur">
       <div className="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-4 px-6 py-4">
         <Link href="/" className="flex items-center gap-3">
-          <div className="relative h-10 w-10">
-            <Image
-              src="/logo-dark.png"
-              alt="AND Offer Logo"
-              width={40}
-              height={40}
-              className="object-contain dark:hidden"
-              priority
-            />
-            <Image
-              src="/logo.png"
-              alt="AND Offer Logo"
-              width={40}
-              height={40}
-              className="hidden object-contain dark:block"
-              priority
-            />
-          </div>
+          <BrandLogo size={40} />
           <h1 className="text-2xl font-bold text-foreground">AND Offer</h1>
         </Link>
-        <nav className="flex flex-wrap items-center gap-6 text-sm font-medium">
-          {navLinks.map((link) => (
-            <Link
-              key={link.href}
-              href={link.href}
-              className="text-foreground/70 transition hover:text-foreground"
-            >
-              {link.label}
-            </Link>
-          ))}
-        </nav>
         <div className="flex items-center gap-3">
           <ThemeToggle />
           {session?.user ? (
-            <>
-              <span className="text-sm text-foreground/70">
-                {session.user.name || session.user.email}
-              </span>
-              {(session.user.role === "SUPER_ADMIN" ||
-                session.user.role === "ADMIN" ||
-                session.user.role === "STAFF") && (
-                <Link
-                  href="/products"
-                  className="text-sm font-medium text-foreground/70 transition hover:text-foreground"
-                >
-                  Dashboard
-                </Link>
-              )}
-              <form action="/api/auth/signout" method="POST">
-                <button
-                  type="submit"
-                  className="text-sm font-medium text-foreground/70 transition hover:text-foreground"
-                >
-                  Sign Out
-                </button>
-              </form>
-            </>
+            <UserMenu user={session.user} links={navLinks} />
           ) : (
             <>
               <Link
