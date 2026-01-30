@@ -8,7 +8,9 @@ const statusColors = {
   REPLIED:
     "bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-400",
   CLOSED: "bg-gray-100 text-gray-600 dark:bg-gray-800 dark:text-gray-400",
-};
+} as const;
+
+type InquiryStatus = keyof typeof statusColors;
 
 export default async function InquiriesPage() {
   const inquiries = await db.inquiry.findMany({
@@ -19,7 +21,7 @@ export default async function InquiriesPage() {
     },
   });
 
-  type InquiryWithProduct = typeof inquiries[number];
+  type InquiryWithProduct = (typeof inquiries)[number];
 
   return (
     <div className="space-y-6">
@@ -77,7 +79,7 @@ export default async function InquiriesPage() {
                 </td>
                 <td className="px-4 py-3 text-center">
                   <span
-                    className={`inline-block rounded-full px-2 py-0.5 text-xs font-semibold ${statusColors[inq.status]}`}
+                    className={`inline-block rounded-full px-2 py-0.5 text-xs font-semibold ${statusColors[inq.status as InquiryStatus]}`}
                   >
                     {inq.status}
                   </span>

@@ -47,8 +47,8 @@ export default async function DashboardPage() {
     }),
   ]);
 
-  type ProductWithCategory = typeof recentProducts[number];
-  type InquiryType = typeof recentInquiries[number];
+  type ProductWithCategory = (typeof recentProducts)[number];
+  type InquiryType = (typeof recentInquiries)[number];
 
   const isAdmin =
     session.user.role === "SUPER_ADMIN" || session.user.role === "ADMIN";

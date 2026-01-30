@@ -9,7 +9,7 @@ export default async function SuppliersPage() {
     include: { _count: { select: { products: true } } },
   });
 
-  type SupplierWithCount = typeof suppliers[number];
+  type SupplierWithCount = (typeof suppliers)[number];
 
   return (
     <div className="space-y-6">

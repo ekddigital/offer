@@ -13,7 +13,7 @@ export default async function ProductsPage() {
     },
   });
 
-  type ProductWithRelations = typeof products[number];
+  type ProductWithRelations = (typeof products)[number];
 
   return (
     <div className="space-y-6">
