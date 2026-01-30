@@ -1,10 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
-import { db } from "@/lib/db";
+import { db, Prisma } from "@/lib/db";
 import {
   productCreateSchema,
   productQuerySchema,
 } from "@/lib/validation/products";
-import { Prisma } from "@prisma/client";
 
 // ============================================================================
 // GET /api/products - List products with pagination & filters

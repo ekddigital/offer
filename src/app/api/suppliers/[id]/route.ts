@@ -1,7 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
-import { db } from "@/lib/db";
+import { db, Prisma } from "@/lib/db";
 import { supplierUpdateSchema } from "@/lib/validation/suppliers";
-import { Prisma } from "@prisma/client";
 
 type Ctx = { params: Promise<{ id: string }> };
 

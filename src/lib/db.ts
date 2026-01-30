@@ -2,7 +2,7 @@
  * Prisma client singleton (Prisma 7+)
  * Prevents multiple instances in dev mode
  */
-import { PrismaClient } from "@prisma/client";
+import { PrismaClient, Prisma } from "@prisma/client";
 import { PrismaPg } from "@prisma/adapter-pg";
 import { Pool } from "pg";
 
@@ -19,5 +19,8 @@ function createPrismaClient() {
 }
 
 export const db = globalForPrisma.prisma ?? createPrismaClient();
+
+// Re-export Prisma namespace for error handling
+export { Prisma };
 
 if (process.env.NODE_ENV !== "production") globalForPrisma.prisma = db;
