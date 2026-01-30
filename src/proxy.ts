@@ -2,9 +2,6 @@ import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 import { auth } from "@/lib/auth";
 
-// Force middleware to run in Node.js runtime instead of Edge
-export const runtime = "nodejs";
-
 // Protected admin routes
 const adminRoutes = [
   "/products",
@@ -14,7 +11,7 @@ const adminRoutes = [
   "/settings",
 ];
 
-export async function middleware(request: NextRequest) {
+export async function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
   // Check if this is an admin route

@@ -33,19 +33,19 @@ export default function HeroSection() {
     <section className="grid gap-10 lg:grid-cols-[1.1fr_0.9fr]">
       <div className="space-y-6">
         <p className="text-sm font-semibold uppercase tracking-[0.24em] text-brand-secondary">
-          AND Offer Portal
+          A.N.D. GROUP OF COMPANIES LLC
         </p>
         <h2 className="text-4xl font-semibold leading-tight sm:text-5xl">
-          Source heavy equipment and electronics through
-          <span className="text-gradient from-brand-secondary to-brand-accent">
+          Direct Sourcing from China
+          <span className="bg-gradient-to-r from-[#A5F3FC] to-[#22D3EE] bg-clip-text text-transparent">
             {" "}
-            AND Offer{` `}
+            via AND Offer{" "}
           </span>
         </h2>
         <p className="text-lg text-muted-foreground">
-          The product marketplace for A.N.D. GROUP OF COMPANIES LLC—connecting
-          you to verified Chinese suppliers for transport materials, mobility
-          tech, and high-volume equipment.
+          Your trusted portal for heavy equipment, industrial machinery, and
+          electronics. Connect directly with verified Chinese suppliers through
+          our secure platform.
         </p>
         <div className="flex flex-wrap gap-3">
           <Link

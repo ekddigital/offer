@@ -1,10 +1,11 @@
 import Link from "next/link";
+import Image from "next/image";
 import { auth } from "@/lib/auth";
 import { ThemeToggle } from "@/components/ui/theme-toggle";
 
 const navLinks = [
   { label: "Home", href: "/" },
-  { label: "About", href: "/about" },
+  { label: "Products", href: "/products" },
   { label: "Contact", href: "/contact" },
 ];
 
@@ -13,17 +14,27 @@ export default async function SiteHeader() {
 
   return (
     <header className="border-b border-border bg-card/90 backdrop-blur">
-      <div className="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-4 px-6 py-5">
+      <div className="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-4 px-6 py-4">
         <Link href="/" className="flex items-center gap-3">
-          <div className="h-10 w-10 rounded-xl bg-gradient-brand" />
-          <div className="leading-tight">
-            <p className="text-xs uppercase tracking-[0.24em] text-brand-secondary">
-              AND Offer
-            </p>
-            <h1 className="text-lg font-semibold text-foreground">
-              Product Portal
-            </h1>
+          <div className="relative h-10 w-10">
+            <Image
+              src="/logo-dark.png"
+              alt="AND Offer Logo"
+              width={40}
+              height={40}
+              className="object-contain dark:hidden"
+              priority
+            />
+            <Image
+              src="/logo.png"
+              alt="AND Offer Logo"
+              width={40}
+              height={40}
+              className="hidden object-contain dark:block"
+              priority
+            />
           </div>
+          <h1 className="text-2xl font-bold text-foreground">AND Offer</h1>
         </Link>
         <nav className="flex flex-wrap items-center gap-6 text-sm font-medium">
           {navLinks.map((link) => (

@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 
 const footerLinks = [
   {
@@ -26,23 +27,43 @@ export default function SiteFooter() {
         <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-4">
           {/* Brand - spans 2 columns on medium screens */}
           <div className="space-y-4 md:col-span-2 lg:col-span-1">
-            <div className="flex items-center gap-2">
-              <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-brand text-sm font-bold text-white">
-                A
+            <div className="flex items-center gap-3">
+              <div className="relative h-10 w-10">
+                <Image
+                  src="/logo-dark.png"
+                  alt="AND Offer Logo"
+                  width={40}
+                  height={40}
+                  className="object-contain dark:hidden"
+                />
+                <Image
+                  src="/logo.png"
+                  alt="AND Offer Logo"
+                  width={40}
+                  height={40}
+                  className="hidden object-contain dark:block"
+                />
               </div>
-              <span className="text-lg font-bold text-brand-primary dark:text-foreground">
-                AND Offer
-              </span>
+              <div className="leading-tight">
+                <span className="text-xl font-bold text-brand-primary dark:text-foreground">
+                  AND Offer
+                </span>
+                <p className="text-xs text-muted-foreground">
+                  by A.N.D. GROUP OF COMPANIES
+                </p>
+              </div>
             </div>
             <p className="text-sm text-muted-foreground">
-              The product portal for A.N.D. GROUP OF COMPANIES LLC. Direct
-              sourcing from China&apos;s industrial partners.
+              Direct sourcing platform for heavy equipment, industrial
+              machinery, and electronics from trusted Chinese suppliers.
             </p>
           </div>
 
           {/* Contact Info */}
           <div className="space-y-3">
-            <h4 className="text-sm font-semibold text-foreground">Head Office</h4>
+            <h4 className="text-sm font-semibold text-foreground">
+              Head Office
+            </h4>
             <div className="space-y-1 text-sm text-muted-foreground">
               <p>Japan Freeway, Jacob Town</p>
               <p>Adjacent Lonestar, Paynesville</p>
@@ -58,7 +79,9 @@ export default function SiteFooter() {
           {/* Links */}
           {footerLinks.map((group) => (
             <div key={group.title} className="space-y-3">
-              <h4 className="text-sm font-semibold text-foreground">{group.title}</h4>
+              <h4 className="text-sm font-semibold text-foreground">
+                {group.title}
+              </h4>
               <ul className="space-y-2">
                 {group.links.map((link) => (
                   <li key={link.href}>

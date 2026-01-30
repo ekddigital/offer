@@ -20,6 +20,9 @@ export const metadata: Metadata = {
   title: "AND Offer",
   description:
     "Product portal for A.N.D. GROUP OF COMPANIES LLC products and services.",
+  icons: {
+    icon: "/favicon.ico",
+  },
 };
 
 export default function RootLayout({

@@ -43,9 +43,9 @@
     --muted-foreground: 215 16% 47%;
     --destructive: 0 84% 60%;
     --destructive-foreground: 0 0% 100%;
-    --border: 214 32% 91%;
-    --input: 214 32% 91%;
-    --ring: 221 83% 53%;
+    --border: 186 100% 81%; /* #A5F3FC - Cyan brand color */
+    --input: 186 100% 81%; /* #A5F3FC - Cyan brand color */
+    --ring: 186 100% 81%; /* #A5F3FC - Cyan brand color */
   }
 
   .dark {
@@ -66,9 +66,9 @@
     --muted-foreground: 0 0% 60%;
     --destructive: 0 62% 42%;
     --destructive-foreground: 0 0% 98%;
-    --border: 0 0% 20%;
-    --input: 0 0% 20%;
-    --ring: 221 85% 64%;
+    --border: 195 55% 28%; /* #207A8C - Darker teal (subtle) */
+    --input: 195 55% 32%; /* #268BA0 - Input border */
+    --ring: 186 100% 81%; /* #A5F3FC - Focus ring (kept bright) */
   }
 
   * {

@@ -141,9 +141,9 @@ export function generateBaseUIVariables(): Record<string, string> {
     // Muted / Borders
     "--muted": "214 32% 95%", // #F1F5F9 - Alt section
     "--muted-foreground": hexToHSLString(THEME_COLORS.neutral[500]), // #64748B
-    "--border": "220 13% 86%", // #D1D5DB - Default border (higher contrast)
-    "--input": "220 13% 80%", // #C0C7D2 - Input border (clearer)
-    "--ring": hexToHSLString(THEME_COLORS.info.light), // #0284C7 - Focus
+    "--border": hexToHSLString(THEME_COLORS.secondary[200]), // #A5F3FC - Cyan border (brand consistent)
+    "--input": hexToHSLString(THEME_COLORS.secondary[200]), // #A5F3FC - Input border
+    "--ring": hexToHSLString(THEME_COLORS.secondary[200]), // #A5F3FC - Focus ring
 
     // Destructive
     "--destructive": hexToHSLString(THEME_COLORS.error.light), // #DC2626
@@ -179,9 +179,9 @@ export function generateDarkModeVariables(): Record<string, string> {
     // Muted / Borders
     "--muted": "217 33% 17%", // #1F2937 - Elevated surfaces
     "--muted-foreground": "218 11% 65%", // #9CA3AF - Muted text
-    "--border": "215 25% 28%", // #334155 - Default border (visible)
-    "--input": "215 25% 32%", // #3B4A5C - Input border (clearer)
-    "--ring": hexToHSLString(THEME_COLORS.secondary[200]), // #A5F3FC - Focus
+    "--border": "195 55% 28%", // #207A8C - Darker teal (subtle, not reflective)
+    "--input": "195 55% 32%", // #268BA0 - Input border (slightly lighter)
+    "--ring": hexToHSLString(THEME_COLORS.secondary[200]), // #A5F3FC - Focus ring (kept bright for focus)
 
     // Destructive
     "--destructive": hexToHSLString(THEME_COLORS.error.DEFAULT), // #EF4444
