@@ -1,13 +1,7 @@
 import Link from "next/link";
 import { db } from "@/lib/db";
-import type { Category } from "@prisma/client";
 
 export const dynamic = "force-dynamic";
-
-type CategoryWithRelations = Category & {
-  parent: { name: string } | null;
-  _count: { products: number; children: number };
-};
 
 export default async function CategoriesPage() {
   const categories = await db.category.findMany({
@@ -17,6 +11,8 @@ export default async function CategoriesPage() {
       _count: { select: { products: true, children: true } },
     },
   });
+
+  type CategoryWithRelations = typeof categories[number];
 
   return (
     <div className="space-y-6">
