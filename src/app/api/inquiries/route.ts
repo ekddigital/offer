@@ -3,6 +3,7 @@ import { db, Prisma } from "@/lib/db";
 import {
   inquiryCreateSchema,
   inquiryQuerySchema,
+  type InquiryQuery,
 } from "@/lib/validation/inquiries";
 
 // ============================================================================
@@ -11,7 +12,7 @@ import {
 export async function GET(req: NextRequest) {
   try {
     const params = Object.fromEntries(req.nextUrl.searchParams);
-    const query = inquiryQuerySchema.parse(params);
+    const query: InquiryQuery = inquiryQuerySchema.parse(params);
 
     const where: Prisma.InquiryWhereInput = {};
     if (query.status) where.status = query.status;

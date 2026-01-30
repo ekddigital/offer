@@ -3,6 +3,7 @@ import { db, Prisma } from "@/lib/db";
 import {
   productCreateSchema,
   productQuerySchema,
+  type ProductQuery,
 } from "@/lib/validation/products";
 
 // ============================================================================
@@ -11,7 +12,7 @@ import {
 export async function GET(req: NextRequest) {
   try {
     const params = Object.fromEntries(req.nextUrl.searchParams);
-    const query = productQuerySchema.parse(params);
+    const query: ProductQuery = productQuerySchema.parse(params);
 
     const where: Prisma.ProductWhereInput = {};
 
