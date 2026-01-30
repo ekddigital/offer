@@ -58,10 +58,9 @@ export async function PATCH(req: NextRequest, { params }: Ctx) {
 
     return NextResponse.json(product);
   } catch (err) {
-    if (err instanceof Prisma.PrismaClientKnownRequestError) {
-      if (err.code === "P2025") {
-        return NextResponse.json({ error: "Not found" }, { status: 404 });
-      }
+    const prismaErr = err as Prisma.PrismaClientKnownRequestError | null;
+    if (prismaErr?.code === "P2025") {
+      return NextResponse.json({ error: "Not found" }, { status: 404 });
     }
     console.error("[PATCH /api/products/[id]]", err);
     return NextResponse.json(
@@ -82,10 +81,9 @@ export async function DELETE(_req: NextRequest, { params }: Ctx) {
 
     return NextResponse.json({ ok: true });
   } catch (err) {
-    if (err instanceof Prisma.PrismaClientKnownRequestError) {
-      if (err.code === "P2025") {
-        return NextResponse.json({ error: "Not found" }, { status: 404 });
-      }
+    const prismaErr = err as Prisma.PrismaClientKnownRequestError | null;
+    if (prismaErr?.code === "P2025") {
+      return NextResponse.json({ error: "Not found" }, { status: 404 });
     }
     console.error("[DELETE /api/products/[id]]", err);
     return NextResponse.json(
