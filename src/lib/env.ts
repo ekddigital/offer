@@ -39,17 +39,14 @@ function getEnv(): AppEnv {
     return {} as AppEnv;
   }
 
-  // During build time, if no env vars are loaded, return defaults
-  const hasEnvVars = Object.keys(process.env).some(
-    (key) =>
-      key.startsWith("ANDOFFER_") ||
-      ["DATABASE_URL", "NEXTAUTH_URL", "AUTH_SECRET"].includes(key),
-  );
-
-  if (!hasEnvVars && process.env.NODE_ENV !== "development") {
-    console.warn(
-      "⚠️ No environment variables detected during build. Using defaults.",
-    );
+  // Check if we're in a build environment with no env vars (like Vercel without configured variables)
+  const envKeys = Object.keys(process.env);
+  const hasAndofferVars = envKeys.some(key => key.startsWith("ANDOFFER_"));
+  const hasRequiredVars = Boolean(process.env.ANDOFFER_MAIL_API_KEY || process.env.DATABASE_URL);
+  
+  // If we're not in development and have no environment variables, use build defaults
+  if (!hasAndofferVars && !hasRequiredVars) {
+    console.warn("⚠️ No environment variables detected during build. Using safe defaults.");
     return {
       DATABASE_URL: undefined,
       ANDOFFER_MAIL_API_KEY: "ek_build_placeholder",
@@ -66,9 +63,29 @@ function getEnv(): AppEnv {
     };
   }
 
+  // Try to parse the environment variables
   const parsed = envSchema.safeParse(process.env);
 
   if (!parsed.success) {
+    // If parsing fails but we're in a build environment, use safe defaults
+    if (process.env.VERCEL || process.env.CI || !hasRequiredVars) {
+      console.warn("⚠️ Environment validation failed during build. Using safe defaults.");
+      return {
+        DATABASE_URL: undefined,
+        ANDOFFER_MAIL_API_KEY: "ek_build_placeholder",
+        ANDOFFER_DEFAULT_FROM: "noreply@offer.andgroupco.com",
+        ASSETS_API_KEY: undefined,
+        ASSETS_API_SECRET: undefined,
+        ASSETS_BASE_URL: "https://www.assets.andgroupco.com",
+        NEXTAUTH_URL: undefined,
+        NEXTAUTH_SECRET: undefined,
+        AUTH_SECRET: undefined,
+        ANDOFFER_JWT_SECRET: undefined,
+        STRIPE_SECRET_KEY: undefined,
+        STRIPE_WEBHOOK_SECRET: undefined,
+      };
+    }
+    
     console.error(
       "❌ Invalid environment variables:",
       parsed.error.flatten().fieldErrors,
