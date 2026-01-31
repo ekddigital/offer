@@ -6,10 +6,10 @@ const envSchema = z.object({
 
   // Mail API (EKDSend)
   ANDOFFER_MAIL_API_KEY: z.string().optional(),
-  ANDOFFER_DEFAULT_FROM: z
-    .string()
-    .transform((val) => val || "noreply@offer.andgroupco.com")
-    .pipe(z.string().email()),
+  ANDOFFER_DEFAULT_FROM: z.preprocess(
+    (val) => val || "noreply@offer.andgroupco.com",
+    z.string().email(),
+  ),
 
   // Assets API
   ASSETS_API_KEY: z.string().min(1, "ASSETS_API_KEY is required"),
@@ -42,7 +42,7 @@ export const env: AppEnv = new Proxy({} as AppEnv, {
       _env = envSchema.parse({
         DATABASE_URL: process.env.DATABASE_URL,
         ANDOFFER_MAIL_API_KEY: process.env.ANDOFFER_MAIL_API_KEY,
-        ANDOFFER_DEFAULT_FROM: process.env.ANDOFFER_DEFAULT_FROM || undefined,
+        ANDOFFER_DEFAULT_FROM: process.env.ANDOFFER_DEFAULT_FROM,
         ASSETS_API_KEY: process.env.ASSETS_API_KEY,
         ASSETS_API_SECRET: process.env.ASSETS_API_SECRET,
         ASSETS_BASE_URL: process.env.ASSETS_BASE_URL,
