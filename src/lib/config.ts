@@ -27,7 +27,11 @@ export async function getConfigs(
 
   const result: Record<string, string | null> = {};
   for (const k of keys) {
-    result[k] = configs.find((c) => c.key === k)?.value ?? null;
+    result[k] =
+      configs.find(
+        (c: { key: string; value: string; label: string | null }) =>
+          c.key === k,
+      )?.value ?? null;
   }
   return result;
 }

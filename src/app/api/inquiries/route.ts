@@ -12,12 +12,19 @@ import {
 export async function GET(req: NextRequest) {
   try {
     const params = Object.fromEntries(req.nextUrl.searchParams);
-    const parsed = inquiryQuerySchema.parse(params);
-    const query: InquiryQuery = {
-      page: parsed.page,
-      limit: parsed.limit,
-      status: parsed.status,
-    };
+    const result = inquiryQuerySchema.safeParse(params);
+
+    if (!result.success) {
+      return NextResponse.json(
+        { error: "Invalid query parameters" },
+        { status: 400 },
+      );
+    }
+
+    const query = result.data;
+    // Explicitly parse as numbers to avoid TypeScript 'unknown' errors
+    const page = Number(query.page) || 1;
+    const limit = Number(query.limit) || 20;
 
     const where: Prisma.InquiryWhereInput = {};
     if (query.status) where.status = query.status;
@@ -25,8 +32,8 @@ export async function GET(req: NextRequest) {
     const [items, total] = await Promise.all([
       db.inquiry.findMany({
         where,
-        skip: (query.page - 1) * query.limit,
-        take: query.limit,
+        skip: (page - 1) * limit,
+        take: limit,
         orderBy: { createdAt: "desc" },
         include: {
           product: { select: { id: true, name: true } },
@@ -38,10 +45,10 @@ export async function GET(req: NextRequest) {
     return NextResponse.json({
       items,
       meta: {
-        page: query.page,
-        limit: query.limit,
+        page,
+        limit,
         total,
-        pages: Math.ceil(total / query.limit),
+        pages: Math.ceil(total / limit),
       },
     });
   } catch (err) {
