@@ -12,7 +12,12 @@ import {
 export async function GET(req: NextRequest) {
   try {
     const params = Object.fromEntries(req.nextUrl.searchParams);
-    const query = inquiryQuerySchema.parse(params) as InquiryQuery;
+    const parsed = inquiryQuerySchema.parse(params);
+    const query: InquiryQuery = {
+      page: parsed.page,
+      limit: parsed.limit,
+      status: parsed.status,
+    };
 
     const where: Prisma.InquiryWhereInput = {};
     if (query.status) where.status = query.status;

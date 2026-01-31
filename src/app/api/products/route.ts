@@ -12,7 +12,15 @@ import {
 export async function GET(req: NextRequest) {
   try {
     const params = Object.fromEntries(req.nextUrl.searchParams);
-    const query = productQuerySchema.parse(params) as ProductQuery;
+    const parsed = productQuerySchema.parse(params);
+    const query: ProductQuery = {
+      page: parsed.page,
+      limit: parsed.limit,
+      status: parsed.status,
+      featured: parsed.featured,
+      categoryId: parsed.categoryId,
+      q: parsed.q,
+    };
 
     const where: Prisma.ProductWhereInput = {};
 

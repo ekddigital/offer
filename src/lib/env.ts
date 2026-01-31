@@ -32,17 +32,28 @@ const envSchema = z.object({
 
 export type AppEnv = z.infer<typeof envSchema>;
 
-export const env = envSchema.parse({
-  DATABASE_URL: process.env.DATABASE_URL,
-  ANDOFFER_MAIL_API_KEY: process.env.ANDOFFER_MAIL_API_KEY,
-  ANDOFFER_DEFAULT_FROM: process.env.ANDOFFER_DEFAULT_FROM,
-  ASSETS_API_KEY: process.env.ASSETS_API_KEY,
-  ASSETS_API_SECRET: process.env.ASSETS_API_SECRET,
-  ASSETS_BASE_URL: process.env.ASSETS_BASE_URL,
-  NEXTAUTH_URL: process.env.NEXTAUTH_URL,
-  NEXTAUTH_SECRET: process.env.NEXTAUTH_SECRET,
-  AUTH_SECRET: process.env.AUTH_SECRET,
-  ANDOFFER_JWT_SECRET: process.env.ANDOFFER_JWT_SECRET,
-  STRIPE_SECRET_KEY: process.env.STRIPE_SECRET_KEY,
-  STRIPE_WEBHOOK_SECRET: process.env.STRIPE_WEBHOOK_SECRET,
+// Lazy initialization to avoid build-time validation errors
+// Environment variables are only validated at runtime when accessed
+let _env: AppEnv | undefined;
+
+export const env: AppEnv = new Proxy({} as AppEnv, {
+  get(_, prop: string) {
+    if (!_env) {
+      _env = envSchema.parse({
+        DATABASE_URL: process.env.DATABASE_URL,
+        ANDOFFER_MAIL_API_KEY: process.env.ANDOFFER_MAIL_API_KEY,
+        ANDOFFER_DEFAULT_FROM: process.env.ANDOFFER_DEFAULT_FROM,
+        ASSETS_API_KEY: process.env.ASSETS_API_KEY,
+        ASSETS_API_SECRET: process.env.ASSETS_API_SECRET,
+        ASSETS_BASE_URL: process.env.ASSETS_BASE_URL,
+        NEXTAUTH_URL: process.env.NEXTAUTH_URL,
+        NEXTAUTH_SECRET: process.env.NEXTAUTH_SECRET,
+        AUTH_SECRET: process.env.AUTH_SECRET,
+        ANDOFFER_JWT_SECRET: process.env.ANDOFFER_JWT_SECRET,
+        STRIPE_SECRET_KEY: process.env.STRIPE_SECRET_KEY,
+        STRIPE_WEBHOOK_SECRET: process.env.STRIPE_WEBHOOK_SECRET,
+      });
+    }
+    return _env[prop as keyof AppEnv];
+  },
 });
