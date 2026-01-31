@@ -9,6 +9,7 @@ const envSchema = z.object({
   ANDOFFER_DEFAULT_FROM: z
     .string()
     .email()
+    .optional()
     .default("noreply@offer.andgroupco.com"),
 
   // Assets API
@@ -42,7 +43,7 @@ export const env: AppEnv = new Proxy({} as AppEnv, {
       _env = envSchema.parse({
         DATABASE_URL: process.env.DATABASE_URL,
         ANDOFFER_MAIL_API_KEY: process.env.ANDOFFER_MAIL_API_KEY,
-        ANDOFFER_DEFAULT_FROM: process.env.ANDOFFER_DEFAULT_FROM,
+        ANDOFFER_DEFAULT_FROM: process.env.ANDOFFER_DEFAULT_FROM || undefined,
         ASSETS_API_KEY: process.env.ASSETS_API_KEY,
         ASSETS_API_SECRET: process.env.ASSETS_API_SECRET,
         ASSETS_BASE_URL: process.env.ASSETS_BASE_URL,
