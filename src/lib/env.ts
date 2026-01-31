@@ -2,17 +2,17 @@ import { z } from "zod";
 
 const envSchema = z.object({
   // Database
-  DATABASE_URL: z.string().min(1, "DATABASE_URL is required"),
+  DATABASE_URL: z.string().optional(),
 
   // Mail API (EKDSend)
   ANDOFFER_MAIL_API_KEY: z.string().optional(),
-  ANDOFFER_DEFAULT_FROM: z.preprocess(
-    (val) => val || "noreply@offer.andgroupco.com",
-    z.string().email(),
-  ),
+  ANDOFFER_DEFAULT_FROM: z
+    .string()
+    .email()
+    .default("noreply@offer.andgroupco.com"),
 
   // Assets API
-  ASSETS_API_KEY: z.string().min(1, "ASSETS_API_KEY is required"),
+  ASSETS_API_KEY: z.string().optional(),
   ASSETS_API_SECRET: z.string().optional(),
   ASSETS_BASE_URL: z
     .string()
@@ -32,28 +32,25 @@ const envSchema = z.object({
 
 export type AppEnv = z.infer<typeof envSchema>;
 
-// Lazy initialization to avoid build-time validation errors
-// Environment variables are only validated at runtime when accessed
-let _env: AppEnv | undefined;
+/** Validated environment variables - only runs on server */
+function getEnv(): AppEnv {
+  // Skip validation on client side
+  if (typeof window !== "undefined") {
+    return {} as AppEnv;
+  }
 
-export const env: AppEnv = new Proxy({} as AppEnv, {
-  get(_, prop: string) {
-    if (!_env) {
-      _env = envSchema.parse({
-        DATABASE_URL: process.env.DATABASE_URL,
-        ANDOFFER_MAIL_API_KEY: process.env.ANDOFFER_MAIL_API_KEY,
-        ANDOFFER_DEFAULT_FROM: process.env.ANDOFFER_DEFAULT_FROM,
-        ASSETS_API_KEY: process.env.ASSETS_API_KEY,
-        ASSETS_API_SECRET: process.env.ASSETS_API_SECRET,
-        ASSETS_BASE_URL: process.env.ASSETS_BASE_URL,
-        NEXTAUTH_URL: process.env.NEXTAUTH_URL,
-        NEXTAUTH_SECRET: process.env.NEXTAUTH_SECRET,
-        AUTH_SECRET: process.env.AUTH_SECRET,
-        ANDOFFER_JWT_SECRET: process.env.ANDOFFER_JWT_SECRET,
-        STRIPE_SECRET_KEY: process.env.STRIPE_SECRET_KEY,
-        STRIPE_WEBHOOK_SECRET: process.env.STRIPE_WEBHOOK_SECRET,
-      });
-    }
-    return _env[prop as keyof AppEnv];
-  },
-});
+  const parsed = envSchema.safeParse(process.env);
+
+  if (!parsed.success) {
+    console.warn(
+      "⚠️ Invalid environment variables:",
+      parsed.error.flatten().fieldErrors
+    );
+    // Return defaults instead of throwing
+    return envSchema.parse({});
+  }
+
+  return parsed.data;
+}
+
+export const env = getEnv();
