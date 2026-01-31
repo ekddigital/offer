@@ -6,6 +6,12 @@ const EKDSEND_BASE_URL = "https://es.ekddigital.com/api/v1";
 export async function sendTransactionalEmail(input: unknown) {
   const payload = sendEmailSchema.parse(input);
 
+  // Check if we're using a placeholder API key
+  if (!env.ANDOFFER_MAIL_API_KEY || env.ANDOFFER_MAIL_API_KEY === "ek_build_placeholder") {
+    console.error("❌ EKDSend API key is not properly configured (using placeholder or missing)");
+    throw new Error("Email service is not configured. Please configure ANDOFFER_MAIL_API_KEY.");
+  }
+
   const response = await fetch(`${EKDSEND_BASE_URL}/send`, {
     method: "POST",
     headers: {
@@ -28,6 +34,12 @@ export async function sendTransactionalEmail(input: unknown) {
 
 export async function sendEmailAdvanced(input: unknown) {
   const payload = sendEmailFullSchema.parse(input);
+
+  // Check if we're using a placeholder API key
+  if (!env.ANDOFFER_MAIL_API_KEY || env.ANDOFFER_MAIL_API_KEY === "ek_build_placeholder") {
+    console.error("❌ EKDSend API key is not properly configured (using placeholder or missing)");
+    throw new Error("Email service is not configured. Please configure ANDOFFER_MAIL_API_KEY.");
+  }
 
   const emailPayload = {
     ...payload,

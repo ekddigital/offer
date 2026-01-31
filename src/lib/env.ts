@@ -41,12 +41,16 @@ function getEnv(): AppEnv {
 
   // Check if we're in a build environment with no env vars (like Vercel without configured variables)
   const envKeys = Object.keys(process.env);
-  const hasAndofferVars = envKeys.some(key => key.startsWith("ANDOFFER_"));
-  const hasRequiredVars = Boolean(process.env.ANDOFFER_MAIL_API_KEY || process.env.DATABASE_URL);
-  
+  const hasAndofferVars = envKeys.some((key) => key.startsWith("ANDOFFER_"));
+  const hasRequiredVars = Boolean(
+    process.env.ANDOFFER_MAIL_API_KEY || process.env.DATABASE_URL,
+  );
+
   // If we're not in development and have no environment variables, use build defaults
   if (!hasAndofferVars && !hasRequiredVars) {
-    console.warn("⚠️ No environment variables detected during build. Using safe defaults.");
+    console.warn(
+      "⚠️ No environment variables detected during build. Using safe defaults.",
+    );
     return {
       DATABASE_URL: undefined,
       ANDOFFER_MAIL_API_KEY: "ek_build_placeholder",
@@ -69,7 +73,9 @@ function getEnv(): AppEnv {
   if (!parsed.success) {
     // If parsing fails but we're in a build environment, use safe defaults
     if (process.env.VERCEL || process.env.CI || !hasRequiredVars) {
-      console.warn("⚠️ Environment validation failed during build. Using safe defaults.");
+      console.warn(
+        "⚠️ Environment validation failed during build. Using safe defaults.",
+      );
       return {
         DATABASE_URL: undefined,
         ANDOFFER_MAIL_API_KEY: "ek_build_placeholder",
@@ -85,7 +91,7 @@ function getEnv(): AppEnv {
         STRIPE_WEBHOOK_SECRET: undefined,
       };
     }
-    
+
     console.error(
       "❌ Invalid environment variables:",
       parsed.error.flatten().fieldErrors,

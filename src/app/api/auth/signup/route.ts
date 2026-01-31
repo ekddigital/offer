@@ -27,11 +27,18 @@ export async function POST(request: Request) {
 
     const { email, password, name } = parsed.data;
 
-    // Check if email API key is configured
-    if (!env.ANDOFFER_MAIL_API_KEY) {
-      console.error("❌ ANDOFFER_MAIL_API_KEY is not configured");
+    // Check if email API key is properly configured (not a placeholder)
+    if (!env.ANDOFFER_MAIL_API_KEY || env.ANDOFFER_MAIL_API_KEY === "ek_build_placeholder") {
+      console.error("❌ Email service not properly configured:", {
+        hasKey: !!env.ANDOFFER_MAIL_API_KEY,
+        isPlaceholder: env.ANDOFFER_MAIL_API_KEY === "ek_build_placeholder",
+        keyPrefix: env.ANDOFFER_MAIL_API_KEY?.substring(0, 10) + "...",
+      });
       return NextResponse.json(
-        { error: "Email service is not configured. Please contact support." },
+        { 
+          error: "Email service is not properly configured. Please contact support.",
+          details: "The application is using placeholder configuration values."
+        },
         { status: 500 },
       );
     }
