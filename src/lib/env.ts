@@ -8,9 +8,8 @@ const envSchema = z.object({
   ANDOFFER_MAIL_API_KEY: z.string().optional(),
   ANDOFFER_DEFAULT_FROM: z
     .string()
-    .email()
-    .optional()
-    .default("noreply@offer.andgroupco.com"),
+    .transform((val) => val || "noreply@offer.andgroupco.com")
+    .pipe(z.string().email()),
 
   // Assets API
   ASSETS_API_KEY: z.string().min(1, "ASSETS_API_KEY is required"),
