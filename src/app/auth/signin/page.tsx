@@ -1,21 +1,38 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect, Suspense } from "react";
 import { signIn } from "next-auth/react";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { BrandLogo } from "@/components/ui/brand-logo";
 
-export default function SignInPage() {
+function SignInForm() {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
+  const [success, setSuccess] = useState("");
   const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    // Check for success messages from URL params
+    const registered = searchParams.get("registered");
+    const verified = searchParams.get("verified");
+
+    if (registered) {
+      setSuccess(
+        "Account created! Please check your email for verification code.",
+      );
+    } else if (verified) {
+      setSuccess("Email verified successfully! You can now sign in.");
+    }
+  }, [searchParams]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
+    setSuccess("");
     setLoading(true);
 
     try {
@@ -26,7 +43,12 @@ export default function SignInPage() {
       });
 
       if (result?.error) {
-        setError("Invalid email or password");
+        // Check if error is about email verification
+        if (result.error.includes("verify your email")) {
+          setError("Please verify your email address before signing in.");
+        } else {
+          setError("Invalid email or password");
+        }
       } else {
         router.push("/");
         router.refresh();
@@ -57,6 +79,22 @@ export default function SignInPage() {
             {error && (
               <div className="rounded-lg bg-red-50 p-4 text-sm text-red-600 dark:bg-red-900/20">
                 {error}
+                {error.includes("verify your email") && email && (
+                  <div className="mt-2">
+                    <Link
+                      href={`/auth/verify?email=${encodeURIComponent(email)}`}
+                      className="underline font-medium hover:no-underline"
+                    >
+                      Verify your email now →
+                    </Link>
+                  </div>
+                )}
+              </div>
+            )}
+
+            {success && (
+              <div className="rounded-lg bg-green-50 p-4 text-sm text-green-600 dark:bg-green-900/20">
+                {success}
               </div>
             )}
 
@@ -134,5 +172,13 @@ export default function SignInPage() {
         </div>
       </div>
     </div>
+  );
+}
+
+export default function SignInPage() {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <SignInForm />
+    </Suspense>
   );
 }

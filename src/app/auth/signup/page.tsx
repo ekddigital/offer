@@ -50,8 +50,13 @@ export default function SignUpPage() {
         return;
       }
 
-      // Redirect to sign in page with success message
-      router.push("/auth/signin?registered=true");
+      // If requires verification, redirect to verify email page
+      if (data.requiresVerification) {
+        router.push(`/auth/verify?email=${encodeURIComponent(formData.email)}`);
+      } else {
+        // Fallback: redirect to sign in page
+        router.push("/auth/signin?registered=true");
+      }
     } catch {
       setError("An error occurred. Please try again.");
     } finally {

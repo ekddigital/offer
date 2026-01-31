@@ -3,6 +3,8 @@ import { db } from "@/lib/db";
 import bcrypt from "bcryptjs";
 import { z } from "zod";
 import { sendEmailAdvanced } from "@/lib/api/ekdsend";
+import { generateOTP, generateOTPExpiration } from "@/lib/auth/otp";
+import { getVerificationEmailTemplate } from "@/lib/auth/email-templates";
 
 const signUpSchema = z.object({
   email: z.string().email(),
@@ -30,54 +32,110 @@ export async function POST(request: Request) {
     });
 
     if (existingUser) {
-      return NextResponse.json(
-        { error: "User with this email already exists" },
-        { status: 409 },
-      );
+      // If user exists but is not verified, allow re-registration with new OTP
+      if (!existingUser.emailVerified && !existingUser.isActive) {
+        // Generate new OTP
+        const otpCode = generateOTP();
+        const otpExpiration = generateOTPExpiration();
+
+        // Update user with new OTP and password
+        const hashedPassword = await bcrypt.hash(password, 12);
+
+        await db.user.update({
+          where: { email: email.toLowerCase() },
+          data: {
+            name,
+            pwdHash: hashedPassword,
+            emailVerificationCode: otpCode,
+            emailVerificationExp: otpExpiration,
+          },
+        });
+
+        // Send verification email
+        const emailTemplate = getVerificationEmailTemplate(name, otpCode);
+
+        try {
+          await sendEmailAdvanced({
+            to: email.toLowerCase(),
+            subject: emailTemplate.subject,
+            html: emailTemplate.html,
+            text: emailTemplate.text,
+          });
+        } catch (emailError) {
+          console.error("Failed to send verification email:", emailError);
+          return NextResponse.json(
+            { error: "Failed to send verification email. Please try again." },
+            { status: 500 },
+          );
+        }
+
+        return NextResponse.json(
+          {
+            success: true,
+            message: "Verification code sent to your email",
+            requiresVerification: true,
+          },
+          { status: 200 },
+        );
+      } else {
+        // User already exists and is verified/active
+        return NextResponse.json(
+          { error: "An account with this email already exists" },
+          { status: 409 },
+        );
+      }
     }
 
     // Hash password
     const pwdHash = await bcrypt.hash(password, 12);
 
-    // Create user
+    // Generate OTP
+    const otpCode = generateOTP();
+    const otpExpiration = generateOTPExpiration();
+
+    // Create user with verification pending
     const user = await db.user.create({
       data: {
         email: email.toLowerCase(),
         name,
         pwdHash,
         role: "BUYER",
+        emailVerificationCode: otpCode,
+        emailVerificationExp: otpExpiration,
+        isActive: false, // User is not active until email is verified
       },
     });
 
-    // Send welcome email
+    // Send verification email
+    const emailTemplate = getVerificationEmailTemplate(name, otpCode);
+
     try {
       await sendEmailAdvanced({
         to: user.email,
-        subject: "Welcome to AND Offer",
-        html: `
-          <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto;">
-            <h1 style="color: #0B1F3A;">Welcome to AND Offer, ${user.name}!</h1>
-            <p>Thank you for creating an account with us.</p>
-            <p>You can now sign in and start exploring our products sourced directly from verified Chinese suppliers.</p>
-            <p>If you have any questions, feel free to reach out to our support team.</p>
-            <p style="margin-top: 40px; padding-top: 20px; border-top: 1px solid #eee; color: #666; font-size: 14px;">
-              Best regards,<br>
-              The AND Offer Team<br>
-              A.N.D. GROUP OF COMPANIES LLC
-            </p>
-          </div>
-        `,
-        text: `Welcome to AND Offer, ${user.name}! Thank you for creating an account with us.`,
+        subject: emailTemplate.subject,
+        html: emailTemplate.html,
+        text: emailTemplate.text,
       });
     } catch (emailError) {
-      console.error("Failed to send welcome email:", emailError);
-      // Don't fail the signup if email fails
+      console.error("Failed to send verification email:", emailError);
+
+      // If email fails, delete the created user to allow retry
+      await db.user.delete({
+        where: { id: user.id },
+      });
+
+      return NextResponse.json(
+        { error: "Failed to send verification email. Please try again." },
+        { status: 500 },
+      );
     }
 
     return NextResponse.json(
       {
         success: true,
-        message: "Account created successfully",
+        message:
+          "Account created successfully. Please check your email for verification code.",
+        requiresVerification: true,
         user: {
           id: user.id,
           email: user.email,

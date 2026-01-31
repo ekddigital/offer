@@ -33,6 +33,11 @@ export const authConfig = {
 
         if (!user || !user.pwdHash) return null;
 
+        // Check if user is active (email verified)
+        if (!user.isActive) {
+          throw new Error("Please verify your email address before signing in");
+        }
+
         const passwordMatch = await bcrypt.compare(password, user.pwdHash);
         if (!passwordMatch) return null;
 
