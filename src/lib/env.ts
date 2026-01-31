@@ -5,7 +5,7 @@ const envSchema = z.object({
   DATABASE_URL: z.string().optional(),
 
   // Mail API (EKDSend)
-  ANDOFFER_MAIL_API_KEY: z.string().optional(),
+  ANDOFFER_MAIL_API_KEY: z.string().min(1, "Mail API key is required"),
   ANDOFFER_DEFAULT_FROM: z
     .string()
     .email()
@@ -44,7 +44,7 @@ function getEnv(): AppEnv {
   if (!parsed.success) {
     console.warn(
       "⚠️ Invalid environment variables:",
-      parsed.error.flatten().fieldErrors
+      parsed.error.flatten().fieldErrors,
     );
     // Return defaults instead of throwing
     return envSchema.parse({});

@@ -29,20 +29,87 @@ export async function sendTransactionalEmail(input: unknown) {
 export async function sendEmailAdvanced(input: unknown) {
   const payload = sendEmailFullSchema.parse(input);
 
+  const emailPayload = {
+    ...payload,
+    from: payload.from ?? env.ANDOFFER_DEFAULT_FROM,
+  };
+
+  console.log("🚀 EKDSend API Request:", {
+    url: `${EKDSEND_BASE_URL}/emails`,
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${env.ANDOFFER_MAIL_API_KEY?.substring(0, 10)}...`,
+      "Content-Type": "application/json",
+    },
+    payload: {
+      to: emailPayload.to,
+      from: emailPayload.from,
+      subject: emailPayload.subject,
+      hasHtml: !!emailPayload.html,
+      hasText: !!emailPayload.text,
+    },
+  });
+
   const response = await fetch(`${EKDSEND_BASE_URL}/emails`, {
     method: "POST",
     headers: {
       Authorization: `Bearer ${env.ANDOFFER_MAIL_API_KEY}`,
       "Content-Type": "application/json",
     },
-    body: JSON.stringify({
-      ...payload,
-      from: payload.from ?? env.ANDOFFER_DEFAULT_FROM,
-    }),
+    body: JSON.stringify(emailPayload),
+  });
+
+  console.log("📨 EKDSend API Response:", {
+    status: response.status,
+    statusText: response.statusText,
+    ok: response.ok,
   });
 
   if (!response.ok) {
-    throw new Error(`Email API error: ${response.status}`);
+    const errorText = await response.text();
+    console.error("❌ EKDSend API Error Response:", errorText);
+    throw new Error(`Email API error: ${response.status} - ${errorText}`);
+  }
+
+  const result = await response.json();
+  console.log("✅ EKDSend API Success:", result);
+
+  return result;
+}
+
+/**
+ * Get sandbox emails for testing
+ */
+export async function getSandboxEmails(limit: number = 10) {
+  const response = await fetch(
+    `${EKDSEND_BASE_URL}/sandbox/emails?limit=${limit}`,
+    {
+      headers: {
+        Authorization: `Bearer ${env.ANDOFFER_MAIL_API_KEY}`,
+      },
+    },
+  );
+
+  if (!response.ok) {
+    throw new Error(`Sandbox API error: ${response.status}`);
+  }
+
+  return response.json();
+}
+
+/**
+ * Clear all sandbox emails
+ */
+export async function clearSandboxEmails() {
+  const response = await fetch(`${EKDSEND_BASE_URL}/sandbox/emails/clear`, {
+    method: "DELETE",
+    headers: {
+      Authorization: `Bearer ${env.ANDOFFER_MAIL_API_KEY}`,
+    },
+  });
+
+  if (!response.ok) {
+    throw new Error(`Clear sandbox API error: ${response.status}`);
   }
 
   return response.json();

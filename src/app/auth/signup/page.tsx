@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import { Eye, EyeOff } from "lucide-react";
 import { BrandLogo } from "@/components/ui/brand-logo";
 
 export default function SignUpPage() {
@@ -15,6 +16,27 @@ export default function SignUpPage() {
   });
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [passwordValidation, setPasswordValidation] = useState({
+    minLength: false,
+    hasUpperCase: false,
+    hasLowerCase: false,
+    hasNumbers: false,
+    hasSpecialChar: false,
+  });
+
+  const validatePassword = (password: string) => {
+    const validation = {
+      minLength: password.length >= 8,
+      hasUpperCase: /[A-Z]/.test(password),
+      hasLowerCase: /[a-z]/.test(password),
+      hasNumbers: /\d/.test(password),
+      hasSpecialChar: /[!@#$%^&*(),.?":{}|<>]/.test(password),
+    };
+    setPasswordValidation(validation);
+    return Object.values(validation).every(Boolean);
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -25,8 +47,8 @@ export default function SignUpPage() {
       return;
     }
 
-    if (formData.password.length < 8) {
-      setError("Password must be at least 8 characters");
+    if (!validatePassword(formData.password)) {
+      setError("Password does not meet requirements");
       return;
     }
 
@@ -65,10 +87,16 @@ export default function SignUpPage() {
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
     setFormData((prev) => ({
       ...prev,
-      [e.target.name]: e.target.value,
+      [name]: value,
     }));
+
+    // Validate password as user types
+    if (name === "password") {
+      validatePassword(value);
+    }
   };
 
   return (
@@ -141,20 +169,68 @@ export default function SignUpPage() {
                 >
                   Password
                 </label>
-                <input
-                  id="password"
-                  name="password"
-                  type="password"
-                  autoComplete="new-password"
-                  required
-                  value={formData.password}
-                  onChange={handleChange}
-                  className="mt-1 block w-full rounded-lg border border-border bg-background px-3 py-2 text-foreground placeholder-muted-foreground focus:border-brand-primary focus:outline-none focus:ring-1 focus:ring-brand-primary"
-                  placeholder="••••••••"
-                />
-                <p className="mt-1 text-xs text-muted-foreground">
-                  Must be at least 8 characters
-                </p>
+                <div className="relative">
+                  <input
+                    id="password"
+                    name="password"
+                    type={showPassword ? "text" : "password"}
+                    autoComplete="new-password"
+                    required
+                    value={formData.password}
+                    onChange={handleChange}
+                    className="mt-1 block w-full rounded-lg border border-border bg-background px-3 py-2 pr-10 text-foreground placeholder-muted-foreground focus:border-brand-primary focus:outline-none focus:ring-1 focus:ring-brand-primary"
+                    placeholder="••••••••"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowPassword(!showPassword)}
+                    className="absolute inset-y-0 right-0 flex items-center pr-3 text-muted-foreground hover:text-foreground"
+                  >
+                    {showPassword ? (
+                      <EyeOff className="h-4 w-4" />
+                    ) : (
+                      <Eye className="h-4 w-4" />
+                    )}
+                  </button>
+                </div>
+
+                {/* Password validation indicators */}
+                {formData.password && (
+                  <div className="mt-2 space-y-1 text-xs">
+                    <div
+                      className={`flex items-center space-x-2 ${passwordValidation.minLength ? "text-green-600" : "text-red-500"}`}
+                    >
+                      <span>{passwordValidation.minLength ? "✓" : "✗"}</span>
+                      <span>At least 8 characters</span>
+                    </div>
+                    <div
+                      className={`flex items-center space-x-2 ${passwordValidation.hasUpperCase ? "text-green-600" : "text-red-500"}`}
+                    >
+                      <span>{passwordValidation.hasUpperCase ? "✓" : "✗"}</span>
+                      <span>One uppercase letter</span>
+                    </div>
+                    <div
+                      className={`flex items-center space-x-2 ${passwordValidation.hasLowerCase ? "text-green-600" : "text-red-500"}`}
+                    >
+                      <span>{passwordValidation.hasLowerCase ? "✓" : "✗"}</span>
+                      <span>One lowercase letter</span>
+                    </div>
+                    <div
+                      className={`flex items-center space-x-2 ${passwordValidation.hasNumbers ? "text-green-600" : "text-red-500"}`}
+                    >
+                      <span>{passwordValidation.hasNumbers ? "✓" : "✗"}</span>
+                      <span>One number</span>
+                    </div>
+                    <div
+                      className={`flex items-center space-x-2 ${passwordValidation.hasSpecialChar ? "text-green-600" : "text-red-500"}`}
+                    >
+                      <span>
+                        {passwordValidation.hasSpecialChar ? "✓" : "✗"}
+                      </span>
+                      <span>One special character</span>
+                    </div>
+                  </div>
+                )}
               </div>
 
               <div>
@@ -164,17 +240,52 @@ export default function SignUpPage() {
                 >
                   Confirm password
                 </label>
-                <input
-                  id="confirmPassword"
-                  name="confirmPassword"
-                  type="password"
-                  autoComplete="new-password"
-                  required
-                  value={formData.confirmPassword}
-                  onChange={handleChange}
-                  className="mt-1 block w-full rounded-lg border border-border bg-background px-3 py-2 text-foreground placeholder-muted-foreground focus:border-brand-primary focus:outline-none focus:ring-1 focus:ring-brand-primary"
-                  placeholder="••••••••"
-                />
+                <div className="relative">
+                  <input
+                    id="confirmPassword"
+                    name="confirmPassword"
+                    type={showConfirmPassword ? "text" : "password"}
+                    autoComplete="new-password"
+                    required
+                    value={formData.confirmPassword}
+                    onChange={handleChange}
+                    className="mt-1 block w-full rounded-lg border border-border bg-background px-3 py-2 pr-10 text-foreground placeholder-muted-foreground focus:border-brand-primary focus:outline-none focus:ring-1 focus:ring-brand-primary"
+                    placeholder="••••••••"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                    className="absolute inset-y-0 right-0 flex items-center pr-3 text-muted-foreground hover:text-foreground"
+                  >
+                    {showConfirmPassword ? (
+                      <EyeOff className="h-4 w-4" />
+                    ) : (
+                      <Eye className="h-4 w-4" />
+                    )}
+                  </button>
+                </div>
+
+                {/* Password match indicator */}
+                {formData.confirmPassword && (
+                  <div
+                    className={`mt-1 text-xs flex items-center space-x-2 ${
+                      formData.password === formData.confirmPassword
+                        ? "text-green-600"
+                        : "text-red-500"
+                    }`}
+                  >
+                    <span>
+                      {formData.password === formData.confirmPassword
+                        ? "✓"
+                        : "✗"}
+                    </span>
+                    <span>
+                      {formData.password === formData.confirmPassword
+                        ? "Passwords match"
+                        : "Passwords do not match"}
+                    </span>
+                  </div>
+                )}
               </div>
             </div>
 

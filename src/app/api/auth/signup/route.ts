@@ -5,6 +5,7 @@ import { z } from "zod";
 import { sendEmailAdvanced } from "@/lib/api/ekdsend";
 import { generateOTP, generateOTPExpiration } from "@/lib/auth/otp";
 import { getVerificationEmailTemplate } from "@/lib/auth/email-templates";
+import { env } from "@/lib/env";
 
 const signUpSchema = z.object({
   email: z.string().email(),
@@ -25,6 +26,21 @@ export async function POST(request: Request) {
     }
 
     const { email, password, name } = parsed.data;
+
+    // Check if email API key is configured
+    if (!env.ANDOFFER_MAIL_API_KEY) {
+      console.error("❌ ANDOFFER_MAIL_API_KEY is not configured");
+      return NextResponse.json(
+        { error: "Email service is not configured. Please contact support." },
+        { status: 500 },
+      );
+    }
+
+    console.log(
+      "📧 Email API Key present:",
+      env.ANDOFFER_MAIL_API_KEY ? "✅ Yes" : "❌ No",
+    );
+    console.log("📧 Default FROM email:", env.ANDOFFER_DEFAULT_FROM);
 
     // Check if user already exists
     const existingUser = await db.user.findUnique({
@@ -109,15 +125,49 @@ export async function POST(request: Request) {
     // Send verification email
     const emailTemplate = getVerificationEmailTemplate(name, otpCode);
 
+    console.log("📧 Attempting to send verification email to:", user.email);
+    console.log("📧 Email template generated:", {
+      subject: emailTemplate.subject,
+      hasHtml: !!emailTemplate.html,
+      hasText: !!emailTemplate.text,
+    });
+
     try {
-      await sendEmailAdvanced({
+      const emailPayload = {
         to: user.email,
         subject: emailTemplate.subject,
         html: emailTemplate.html,
         text: emailTemplate.text,
+      };
+
+      console.log("📧 Sending email with payload:", {
+        to: emailPayload.to,
+        subject: emailPayload.subject,
+        from: env.ANDOFFER_DEFAULT_FROM,
+        htmlLength: emailPayload.html?.length || 0,
+        textLength: emailPayload.text?.length || 0,
       });
+
+      const emailResult = await sendEmailAdvanced(emailPayload);
+
+      console.log("📧 Email sent successfully:", emailResult);
+
+      // Check if we're in sandbox mode and inform the user
+      const isSandboxMode = emailResult.sandbox === true;
+
+      if (isSandboxMode) {
+        console.log(
+          "🧪 SANDBOX MODE: Email stored in sandbox, not delivered to real inbox",
+        );
+        console.log("🧪 To view sandbox emails, visit: /api/debug/sandbox");
+      }
     } catch (emailError) {
-      console.error("Failed to send verification email:", emailError);
+      console.error("❌ Failed to send verification email:", emailError);
+      console.error("❌ Email error details:", {
+        message:
+          emailError instanceof Error ? emailError.message : String(emailError),
+        stack: emailError instanceof Error ? emailError.stack : undefined,
+      });
 
       // If email fails, delete the created user to allow retry
       await db.user.delete({
