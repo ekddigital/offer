@@ -42,12 +42,13 @@ function getEnv(): AppEnv {
   const parsed = envSchema.safeParse(process.env);
 
   if (!parsed.success) {
-    console.warn(
-      "⚠️ Invalid environment variables:",
+    console.error(
+      "❌ Invalid environment variables:",
       parsed.error.flatten().fieldErrors,
     );
-    // Return defaults instead of throwing
-    return envSchema.parse({});
+    throw new Error(
+      "Environment validation failed. Please check your .env file.",
+    );
   }
 
   return parsed.data;
