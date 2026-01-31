@@ -1,0 +1,267 @@
+// ============================================================================
+// ANDOFFER PRISMA SCHEMA
+// E-commerce portal for A.N.D. GROUP OF COMPANIES LLC
+// Using Prisma 7+ with PostgreSQL
+// ============================================================================
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "./generated"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+// ============================================================================
+// ENUMS
+// ============================================================================
+
+enum Role {
+  SUPER_ADMIN
+  ADMIN
+  STAFF
+  BUYER
+}
+
+enum Status {
+  DRAFT
+  ACTIVE
+  ARCHIVED
+}
+
+enum InqStatus {
+  NEW
+  REPLIED
+  CLOSED
+}
+
+enum AssetType {
+  IMAGE
+  VIDEO
+  DOC
+}
+
+// ============================================================================
+// USER & AUTH
+// ============================================================================
+
+model User {
+  id            String    @id @default(cuid())
+  email         String    @unique
+  name          String?
+  pwdHash       String?
+  role          Role      @default(BUYER)
+  emailVerified DateTime?
+  image         String?
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  inquiries Inquiry[]
+  accounts  Account[]
+  sessions  Session[]
+
+  @@map("users")
+}
+
+model Account {
+  id                String  @id @default(cuid())
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String? @db.Text
+  access_token      String? @db.Text
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String? @db.Text
+  session_state     String?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+  @@map("accounts")
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("sessions")
+}
+
+model VerificationToken {
+  identifier String
+  token      String   @unique
+  expires    DateTime
+
+  @@unique([identifier, token])
+  @@map("verification_tokens")
+}
+
+// ============================================================================
+// SUPPLIER
+// ============================================================================
+
+model Supplier {
+  id        String   @id @default(cuid())
+  name      String
+  country   String   @default("CN")
+  email     String?
+  phone     String?
+  active    Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  products Product[]
+
+  @@map("suppliers")
+}
+
+// ============================================================================
+// CATEGORY (self-referential for hierarchy)
+// ============================================================================
+
+model Category {
+  id          String  @id @default(cuid())
+  name        String
+  slug        String  @unique
+  description String?
+  sortOrder   Int     @default(0)
+
+  parentId String?
+  parent   Category?  @relation("CategoryTree", fields: [parentId], references: [id])
+  children Category[] @relation("CategoryTree")
+
+  products Product[]
+
+  @@map("categories")
+}
+
+// ============================================================================
+// PRODUCT
+// ============================================================================
+
+model Product {
+  id          String   @id @default(cuid())
+  name        String
+  slug        String   @unique
+  sku         String?  @unique
+  status      Status   @default(DRAFT)
+  summary     String?
+  description String?
+  price       Decimal? @db.Decimal(12, 2)
+  currency    String   @default("USD")
+  srcCountry  String   @default("CN")
+  featured    Boolean  @default(false)
+
+  // WhatsApp contact options
+  whatsappContact String? // Direct WhatsApp number for this product
+  whatsappGroup   String? // WhatsApp group link for this product
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  categoryId String?
+  category   Category? @relation(fields: [categoryId], references: [id])
+
+  supplierId String?
+  supplier   Supplier? @relation(fields: [supplierId], references: [id])
+
+  inventory Inventory?
+  assets    ProdAsset[]
+  inquiries Inquiry[]
+
+  @@index([status])
+  @@index([featured])
+  @@map("products")
+}
+
+// ============================================================================
+// INVENTORY
+// ============================================================================
+
+model Inventory {
+  id       String @id @default(cuid())
+  qty      Int    @default(0)
+  reserved Int    @default(0)
+  leadDays Int    @default(14)
+
+  productId String  @unique
+  product   Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+
+  @@map("inventory")
+}
+
+// ============================================================================
+// ASSET (external assets from assets.andgroupco.com)
+// ============================================================================
+
+model Asset {
+  id       String    @id @default(cuid())
+  name     String
+  url      String
+  type     AssetType @default(IMAGE)
+  mimeType String?
+  size     Int?
+
+  products ProdAsset[]
+
+  @@map("assets")
+}
+
+// ============================================================================
+// PRODUCT <-> ASSET JUNCTION
+// ============================================================================
+
+model ProdAsset {
+  productId String
+  product   Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+
+  assetId String
+  asset   Asset  @relation(fields: [assetId], references: [id], onDelete: Cascade)
+
+  sortOrder Int @default(0)
+
+  @@id([productId, assetId])
+  @@map("prod_assets")
+}
+
+// ============================================================================
+// INQUIRY (WhatsApp / contact form leads)
+// ============================================================================
+
+model Inquiry {
+  id        String    @id @default(cuid())
+  name      String
+  email     String?
+  phone     String?
+  message   String
+  status    InqStatus @default(NEW)
+  createdAt DateTime  @default(now())
+
+  productId String?
+  product   Product? @relation(fields: [productId], references: [id])
+
+  userId String?
+  user   User?   @relation(fields: [userId], references: [id])
+
+  @@map("inquiries")
+}
+
+// ============================================================================
+// SITE CONFIG (Admin-manageable settings)
+// ============================================================================
+
+model SiteConfig {
+  id    String  @id @default("default")
+  key   String  @unique
+  value String
+  label String?
+
+  @@map("site_config")
+}

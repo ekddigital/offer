@@ -2,7 +2,7 @@
  * Prisma client singleton (Prisma 7+)
  * Prevents multiple instances in dev mode
  */
-import { PrismaClient, Prisma } from "@prisma/client";
+import { PrismaClient, Prisma } from "../../prisma/generated";
 import { PrismaPg } from "@prisma/adapter-pg";
 import { Pool } from "pg";
 

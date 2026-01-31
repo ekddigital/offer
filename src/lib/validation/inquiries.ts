@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { InqStatus } from "@prisma/client";
+import { InqStatus } from "../../../prisma/generated";
 
 // ============================================================================
 // INQUIRY VALIDATION SCHEMAS

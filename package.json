@@ -4,12 +4,13 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "next build",
+    "build": "prisma generate --config ./prisma/prisma.config.ts --schema ./prisma/schema.prisma && next build",
+    "postinstall": "prisma generate --config ./prisma/prisma.config.ts --schema ./prisma/schema.prisma",
     "start": "next start",
     "lint": "eslint",
-    "db:gen": "prisma generate --config prisma/prisma.config.ts",
-    "db:push": "prisma db push --config prisma/prisma.config.ts",
-    "db:studio": "prisma studio --config prisma/prisma.config.ts",
+    "db:gen": "prisma generate --config ./prisma/prisma.config.ts --schema ./prisma/schema.prisma",
+    "db:push": "prisma db push --config ./prisma/prisma.config.ts --schema ./prisma/schema.prisma",
+    "db:studio": "prisma studio --config ./prisma/prisma.config.ts --schema ./prisma/schema.prisma",
     "db:seed": "tsx prisma/seed.ts"
   },
   "dependencies": {

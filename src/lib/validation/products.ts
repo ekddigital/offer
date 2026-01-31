@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { Status } from "@prisma/client";
+import { Status } from "../../../prisma/generated";
 
 // ============================================================================
 // PRODUCT VALIDATION SCHEMAS
