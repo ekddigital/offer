@@ -39,6 +39,33 @@ function getEnv(): AppEnv {
     return {} as AppEnv;
   }
 
+  // During build time, if no env vars are loaded, return defaults
+  const hasEnvVars = Object.keys(process.env).some(
+    (key) =>
+      key.startsWith("ANDOFFER_") ||
+      ["DATABASE_URL", "NEXTAUTH_URL", "AUTH_SECRET"].includes(key),
+  );
+
+  if (!hasEnvVars && process.env.NODE_ENV !== "development") {
+    console.warn(
+      "⚠️ No environment variables detected during build. Using defaults.",
+    );
+    return {
+      DATABASE_URL: undefined,
+      ANDOFFER_MAIL_API_KEY: "ek_build_placeholder",
+      ANDOFFER_DEFAULT_FROM: "noreply@offer.andgroupco.com",
+      ASSETS_API_KEY: undefined,
+      ASSETS_API_SECRET: undefined,
+      ASSETS_BASE_URL: "https://www.assets.andgroupco.com",
+      NEXTAUTH_URL: undefined,
+      NEXTAUTH_SECRET: undefined,
+      AUTH_SECRET: undefined,
+      ANDOFFER_JWT_SECRET: undefined,
+      STRIPE_SECRET_KEY: undefined,
+      STRIPE_WEBHOOK_SECRET: undefined,
+    };
+  }
+
   const parsed = envSchema.safeParse(process.env);
 
   if (!parsed.success) {
