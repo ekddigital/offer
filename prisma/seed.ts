@@ -19,32 +19,97 @@ async function main() {
         name: "Super Admin",
         pwdHash,
         role: "SUPER_ADMIN",
+        emailVerified: new Date(), // Email is verified
+        isActive: true, // Account is active
       },
     });
     console.log("✅ Created SUPER_ADMIN:", superAdmin.email);
   } else {
-    console.log("ℹ️  SUPER_ADMIN already exists:", superAdminEmail);
-  }
-
-  // Create sample category
-  const categorySlug = "transport-materials";
-  const existingCategory = await db.category.findUnique({
-    where: { slug: categorySlug },
-  });
-
-  if (!existingCategory) {
-    const category = await db.category.create({
+    // Update existing admin to ensure they're verified and active
+    await db.user.update({
+      where: { email: superAdminEmail },
       data: {
-        name: "Transport Materials",
-        slug: categorySlug,
-        description:
-          "Heavy equipment, trucks, excavators, and logistics materials",
-        sortOrder: 1,
+        emailVerified: new Date(),
+        isActive: true,
       },
     });
-    console.log("✅ Created category:", category.name);
-  } else {
-    console.log("ℹ️  Category already exists:", categorySlug);
+    console.log(
+      "ℹ️  SUPER_ADMIN already exists and verified:",
+      superAdminEmail,
+    );
+  }
+
+  // Create categories
+  const categories = [
+    {
+      name: "Transportation Products",
+      slug: "transportation-products",
+      description:
+        "Vehicles, heavy equipment, trucks, excavators, and logistics materials",
+      sortOrder: 1,
+    },
+    {
+      name: "Electronic Products",
+      slug: "electronic-products",
+      description:
+        "Smartphones, tablets, laptops, computers, and electronic devices",
+      sortOrder: 2,
+    },
+    {
+      name: "Housing Products",
+      slug: "housing-products",
+      description:
+        "Building materials, furniture, fixtures, and home improvement supplies",
+      sortOrder: 3,
+    },
+    {
+      name: "Construction Supply",
+      slug: "construction-supply",
+      description:
+        "Safety gear, tools, and building materials for large projects",
+      sortOrder: 4,
+    },
+    {
+      name: "Industrial Equipment",
+      slug: "industrial-equipment",
+      description: "Machinery, tools, and equipment for industrial operations",
+      sortOrder: 5,
+    },
+    {
+      name: "Consumer Goods",
+      slug: "consumer-goods",
+      description:
+        "General consumer products, household items, and personal accessories",
+      sortOrder: 6,
+    },
+    {
+      name: "Medical & Healthcare",
+      slug: "medical-healthcare",
+      description:
+        "Medical equipment, healthcare supplies, and wellness products",
+      sortOrder: 7,
+    },
+    {
+      name: "Textile & Apparel",
+      slug: "textile-apparel",
+      description: "Clothing, fabrics, textiles, and fashion accessories",
+      sortOrder: 8,
+    },
+  ];
+
+  for (const categoryData of categories) {
+    const existingCategory = await db.category.findUnique({
+      where: { slug: categoryData.slug },
+    });
+
+    if (!existingCategory) {
+      const category = await db.category.create({
+        data: categoryData,
+      });
+      console.log("✅ Created category:", category.name);
+    } else {
+      console.log("ℹ️  Category already exists:", categoryData.name);
+    }
   }
 
   // Create sample supplier

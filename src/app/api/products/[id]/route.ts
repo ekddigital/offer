@@ -47,14 +47,38 @@ export async function PATCH(req: NextRequest, { params }: Ctx) {
     const body = await req.json();
     const data = productUpdateSchema.parse(body);
 
+    // Extract imageIds if present
+    const { imageIds, ...productData } = body;
+
     const product = await db.product.update({
       where: { id },
       data: {
-        ...data,
+        ...productData,
         price:
-          data.price !== undefined ? new Prisma.Decimal(data.price) : undefined,
+          productData.price !== undefined
+            ? new Prisma.Decimal(productData.price)
+            : undefined,
       },
     });
+
+    // If imageIds provided, update associations
+    if (imageIds && Array.isArray(imageIds)) {
+      // Delete existing associations
+      await db.prodAsset.deleteMany({
+        where: { productId: id },
+      });
+
+      // Create new associations
+      if (imageIds.length > 0) {
+        await db.prodAsset.createMany({
+          data: imageIds.map((assetId: string, index: number) => ({
+            productId: id,
+            assetId,
+            sortOrder: index,
+          })),
+        });
+      }
+    }
 
     return NextResponse.json(product);
   } catch (err) {

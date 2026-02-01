@@ -2,6 +2,7 @@
 
 import { useState, useRef, useEffect } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import {
   ChevronDown,
   User,
@@ -46,7 +47,9 @@ const navIcons: Record<string, typeof Home> = {
 
 export function UserMenu({ user, links = [] }: UserMenuProps) {
   const [isOpen, setIsOpen] = useState(false);
+  const [isSigningOut, setIsSigningOut] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
+  const router = useRouter();
 
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
@@ -58,6 +61,22 @@ export function UserMenu({ user, links = [] }: UserMenuProps) {
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
+
+  const handleSignOut = async () => {
+    setIsSigningOut(true);
+    try {
+      await fetch("/api/auth/signout", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ callbackUrl: "/" }),
+      });
+      router.push("/");
+      router.refresh();
+    } catch (error) {
+      console.error("Sign out error:", error);
+      setIsSigningOut(false);
+    }
+  };
 
   const hasAdminAccess =
     user.role === "SUPER_ADMIN" ||
@@ -145,15 +164,14 @@ export function UserMenu({ user, links = [] }: UserMenuProps) {
               </Link>
             )}
 
-            <form action="/api/auth/signout" method="POST">
-              <button
-                type="submit"
-                className="flex w-full items-center gap-3 rounded-md bg-white px-3 py-2 text-sm font-medium text-red-600 transition hover:bg-red-500/10 dark:bg-[#111827] dark:text-red-400"
-              >
-                <LogOut className="h-4 w-4" />
-                Sign Out
-              </button>
-            </form>
+            <button
+              onClick={handleSignOut}
+              disabled={isSigningOut}
+              className="flex w-full items-center gap-3 rounded-md bg-white px-3 py-2 text-sm font-medium text-red-600 transition hover:bg-red-500/10 disabled:opacity-50 dark:bg-[#111827] dark:text-red-400"
+            >
+              <LogOut className="h-4 w-4" />
+              {isSigningOut ? "Signing Out..." : "Sign Out"}
+            </button>
           </div>
         </div>
       )}

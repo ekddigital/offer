@@ -83,12 +83,26 @@ export async function POST(req: NextRequest) {
     const body = await req.json();
     const data = productCreateSchema.parse(body);
 
+    // Extract imageIds if present
+    const { imageIds, ...productData } = body;
+
     const product = await db.product.create({
       data: {
-        ...data,
-        price: data.price ? new Prisma.Decimal(data.price) : null,
+        ...productData,
+        price: productData.price ? new Prisma.Decimal(productData.price) : null,
       },
     });
+
+    // If imageIds provided, create associations
+    if (imageIds && Array.isArray(imageIds) && imageIds.length > 0) {
+      await db.prodAsset.createMany({
+        data: imageIds.map((assetId: string, index: number) => ({
+          productId: product.id,
+          assetId,
+          sortOrder: index,
+        })),
+      });
+    }
 
     return NextResponse.json(product, { status: 201 });
   } catch (err) {

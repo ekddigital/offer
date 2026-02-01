@@ -8,7 +8,15 @@ export default async function EditProductPage({ params }: Props) {
   const { id } = await params;
 
   const [product, categories, suppliers] = await Promise.all([
-    db.product.findUnique({ where: { id } }),
+    db.product.findUnique({
+      where: { id },
+      include: {
+        assets: {
+          orderBy: { sortOrder: "asc" },
+          include: { asset: true },
+        },
+      },
+    }),
     db.category.findMany({
       select: { id: true, name: true },
       orderBy: { name: "asc" },
@@ -40,8 +48,16 @@ export default async function EditProductPage({ params }: Props) {
           currency: product.currency,
           srcCountry: product.srcCountry,
           featured: product.featured,
+          whatsappContact: product.whatsappContact ?? "",
+          whatsappGroup: product.whatsappGroup ?? "",
           categoryId: product.categoryId ?? "",
           supplierId: product.supplierId ?? "",
+          images: product.assets.map((pa) => ({
+            id: pa.asset.id,
+            url: pa.asset.url,
+            name: pa.asset.name,
+            sortOrder: pa.sortOrder,
+          })),
         }}
       />
     </div>

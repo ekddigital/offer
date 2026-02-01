@@ -12,6 +12,7 @@ import {
   Check,
   AlertCircle,
 } from "lucide-react";
+import { Pagination } from "@/components/ui/pagination";
 
 type UserRole = "SUPER_ADMIN" | "ADMIN" | "STAFF" | "BUYER";
 
@@ -54,7 +55,10 @@ export function UsersManagement({
   const router = useRouter();
   const [users, setUsers] = useState<User[]>([]);
   const [filteredUsers, setFilteredUsers] = useState<User[]>([]);
+  const [paginatedUsers, setPaginatedUsers] = useState<User[]>([]);
   const [searchTerm, setSearchTerm] = useState("");
+  const [currentPage, setCurrentPage] = useState(1);
+  const [itemsPerPage] = useState(10);
   const [isLoading, setIsLoading] = useState(true);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingUser, setEditingUser] = useState<User | null>(null);
@@ -79,7 +83,15 @@ export function UsersManagement({
         user.role.toLowerCase().includes(searchTerm.toLowerCase()),
     );
     setFilteredUsers(filtered);
+    setCurrentPage(1); // Reset to first page when search changes
   }, [searchTerm, users]);
+
+  useEffect(() => {
+    // Paginate filtered users
+    const startIndex = (currentPage - 1) * itemsPerPage;
+    const endIndex = startIndex + itemsPerPage;
+    setPaginatedUsers(filteredUsers.slice(startIndex, endIndex));
+  }, [filteredUsers, currentPage, itemsPerPage]);
 
   async function fetchUsers() {
     try {
@@ -230,7 +242,7 @@ export function UsersManagement({
         {currentUserRole === "SUPER_ADMIN" && (
           <button
             onClick={() => openModal()}
-            className="flex items-center gap-2 rounded-lg bg-[#A5F3FC] px-4 py-2 text-sm font-semibold text-[#0B1220] transition hover:bg-[#67E8F9]"
+            className="flex items-center gap-2 rounded-lg border-2 border-[#A5F3FC] bg-[#A5F3FC] px-4 py-2 text-sm font-semibold text-[#0B1220] shadow-sm transition hover:bg-[#67E8F9] hover:border-[#67E8F9]"
           >
             <UserPlus className="h-4 w-4" />
             Add User
@@ -285,7 +297,7 @@ export function UsersManagement({
                 </tr>
               </thead>
               <tbody className="divide-y divide-border">
-                {filteredUsers.map((user) => (
+                {paginatedUsers.map((user) => (
                   <tr key={user.id} className="transition hover:bg-muted/30">
                     <td className="whitespace-nowrap px-6 py-4">
                       <div className="flex items-center gap-3">
@@ -344,23 +356,39 @@ export function UsersManagement({
         )}
       </div>
 
+      {/* Pagination */}
+      {!isLoading && filteredUsers.length > 0 && (
+        <div className="mt-6">
+          <Pagination
+            currentPage={currentPage}
+            totalPages={Math.ceil(filteredUsers.length / itemsPerPage)}
+            onPageChange={setCurrentPage}
+            totalItems={filteredUsers.length}
+            itemsPerPage={itemsPerPage}
+          />
+        </div>
+      )}
+
       {/* Modal */}
       {isModalOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
-          <div className="w-full max-w-md rounded-lg border border-border bg-card shadow-lg">
-            <div className="flex items-center justify-between border-b border-border p-6">
-              <h2 className="text-xl font-semibold text-foreground">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4 backdrop-blur-sm">
+          <div className="w-full max-w-md rounded-lg border-2 border-border bg-white shadow-2xl dark:border-gray-700 dark:bg-[#111827]">
+            <div className="flex items-center justify-between border-b-2 border-border bg-gray-50 p-6 dark:border-gray-700 dark:bg-[#1F2937]">
+              <h2 className="text-xl font-bold text-gray-900 dark:text-white">
                 {editingUser ? "Edit User" : "Add New User"}
               </h2>
               <button
                 onClick={closeModal}
-                className="rounded-lg p-1 text-muted-foreground transition hover:bg-muted hover:text-foreground"
+                className="rounded-lg p-1.5 text-gray-500 transition hover:bg-gray-200 hover:text-gray-900 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white"
               >
                 <X className="h-5 w-5" />
               </button>
             </div>
 
-            <form onSubmit={handleSubmit} className="p-6 space-y-4">
+            <form
+              onSubmit={handleSubmit}
+              className="space-y-4 bg-white p-6 dark:bg-[#111827]"
+            >
               {formErrors.general && (
                 <div className="flex items-start gap-2 rounded-lg bg-red-50 p-3 text-sm text-red-600 dark:bg-red-900/20 dark:text-red-400">
                   <AlertCircle className="h-4 w-4 mt-0.5 shrink-0" />
@@ -369,7 +397,7 @@ export function UsersManagement({
               )}
 
               <div>
-                <label className="mb-1.5 block text-sm font-medium text-foreground">
+                <label className="mb-1.5 block text-sm font-semibold text-gray-700 dark:text-gray-200">
                   Name
                 </label>
                 <input
@@ -378,7 +406,7 @@ export function UsersManagement({
                   onChange={(e) =>
                     setFormData({ ...formData, name: e.target.value })
                   }
-                  className="w-full rounded-lg border border-border bg-background px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground focus:border-[#A5F3FC] focus:outline-none focus:ring-2 focus:ring-[#A5F3FC]/20"
+                  className="w-full rounded-lg border-2 border-gray-300 bg-white px-3 py-2.5 text-sm text-gray-900 placeholder:text-gray-400 focus:border-[#22D3EE] focus:outline-none focus:ring-2 focus:ring-[#22D3EE]/20 dark:border-gray-600 dark:bg-[#1F2937] dark:text-white dark:placeholder:text-gray-500"
                   placeholder="John Doe"
                   required
                 />
@@ -388,7 +416,7 @@ export function UsersManagement({
               </div>
 
               <div>
-                <label className="mb-1.5 block text-sm font-medium text-foreground">
+                <label className="mb-1.5 block text-sm font-semibold text-gray-700 dark:text-gray-200">
                   Email
                 </label>
                 <input
@@ -397,7 +425,7 @@ export function UsersManagement({
                   onChange={(e) =>
                     setFormData({ ...formData, email: e.target.value })
                   }
-                  className="w-full rounded-lg border border-border bg-background px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground focus:border-[#A5F3FC] focus:outline-none focus:ring-2 focus:ring-[#A5F3FC]/20"
+                  className="w-full rounded-lg border-2 border-gray-300 bg-white px-3 py-2.5 text-sm text-gray-900 placeholder:text-gray-400 focus:border-[#22D3EE] focus:outline-none focus:ring-2 focus:ring-[#22D3EE]/20 dark:border-gray-600 dark:bg-[#1F2937] dark:text-white dark:placeholder:text-gray-500"
                   placeholder="john@example.com"
                   required
                 />
@@ -409,10 +437,10 @@ export function UsersManagement({
               </div>
 
               <div>
-                <label className="mb-1.5 block text-sm font-medium text-foreground">
+                <label className="mb-1.5 block text-sm font-semibold text-gray-700 dark:text-gray-200">
                   Password{" "}
                   {editingUser && (
-                    <span className="text-muted-foreground">
+                    <span className="text-sm text-gray-500 dark:text-gray-400">
                       (leave blank to keep current)
                     </span>
                   )}
@@ -423,7 +451,7 @@ export function UsersManagement({
                   onChange={(e) =>
                     setFormData({ ...formData, password: e.target.value })
                   }
-                  className="w-full rounded-lg border border-border bg-background px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground focus:border-[#A5F3FC] focus:outline-none focus:ring-2 focus:ring-[#A5F3FC]/20"
+                  className="w-full rounded-lg border-2 border-gray-300 bg-white px-3 py-2.5 text-sm text-gray-900 placeholder:text-gray-400 focus:border-[#22D3EE] focus:outline-none focus:ring-2 focus:ring-[#22D3EE]/20 dark:border-gray-600 dark:bg-[#1F2937] dark:text-white dark:placeholder:text-gray-500"
                   placeholder="••••••••"
                   required={!editingUser}
                 />
@@ -435,7 +463,7 @@ export function UsersManagement({
               </div>
 
               <div>
-                <label className="mb-1.5 block text-sm font-medium text-foreground">
+                <label className="mb-1.5 block text-sm font-semibold text-gray-700 dark:text-gray-200">
                   Role
                 </label>
                 <select
@@ -446,7 +474,7 @@ export function UsersManagement({
                       role: e.target.value as UserRole,
                     })
                   }
-                  className="w-full rounded-lg border border-border bg-background px-3 py-2 text-sm text-foreground focus:border-[#A5F3FC] focus:outline-none focus:ring-2 focus:ring-[#A5F3FC]/20"
+                  className="w-full rounded-lg border-2 border-gray-300 bg-white px-3 py-2.5 text-sm text-gray-900 focus:border-[#22D3EE] focus:outline-none focus:ring-2 focus:ring-[#22D3EE]/20 dark:border-gray-600 dark:bg-[#1F2937] dark:text-white"
                   required
                 >
                   {availableRoles.map((role) => (
@@ -464,14 +492,14 @@ export function UsersManagement({
                 <button
                   type="button"
                   onClick={closeModal}
-                  className="flex-1 rounded-lg border border-border bg-card px-4 py-2 text-sm font-medium text-foreground transition hover:bg-muted"
+                  className="flex-1 rounded-lg border-2 border-gray-300 bg-white px-4 py-2.5 text-sm font-semibold text-gray-700 transition hover:bg-gray-50 dark:border-gray-600 dark:bg-[#1F2937] dark:text-gray-200 dark:hover:bg-gray-700"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
                   disabled={isSubmitting}
-                  className="flex flex-1 items-center justify-center gap-2 rounded-lg bg-[#A5F3FC] px-4 py-2 text-sm font-semibold text-[#0B1220] transition hover:bg-[#67E8F9] disabled:opacity-50"
+                  className="flex flex-1 items-center justify-center gap-2 rounded-lg border-2 border-[#A5F3FC] bg-[#A5F3FC] px-4 py-2.5 text-sm font-bold text-[#0B1220] shadow-sm transition hover:border-[#22D3EE] hover:bg-[#22D3EE] disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   {isSubmitting ? (
                     "Saving..."

@@ -37,22 +37,30 @@ export default async function DashboardLayout({
             </div>
           </div>
           <nav className="flex-1 space-y-1 px-4 py-4 text-sm">
+            {/* Back to Home Link */}
+            <Link
+              href="/"
+              className="flex items-center gap-3 rounded-lg border-2 border-ecommerce-border bg-ecommerce-secondary-hover px-3 py-2 font-medium text-foreground transition hover:bg-ecommerce-primary hover:text-ecommerce-primary-text"
+            >
+              ← Back to Home
+            </Link>
+            <div className="h-2" />
             {navItems
               .filter((item) => !item.adminOnly || isAdminOrAbove)
               .map((item) => (
                 <Link
                   key={item.href}
                   href={item.href}
-                  className="flex items-center gap-3 rounded-lg border-2 border-transparent px-3 py-2 font-medium text-foreground/80 transition hover:border-ecommerce-border hover:bg-ecommerce-secondary-hover hover:text-foreground"
+                  className="flex items-center gap-3 rounded-lg border-2 border-border px-3 py-2 font-medium text-foreground/80 transition hover:border-ecommerce-border hover:bg-ecommerce-secondary-hover hover:text-foreground"
                 >
                   {item.label}
                 </Link>
               ))}
           </nav>
           <div className="border-t border-border px-4 py-4 text-sm text-muted-foreground">
-            <Link href="/" className="transition hover:text-foreground">
-              ← Back to site
-            </Link>
+            <p className="text-xs">
+              Logged in as {session?.user?.name || "User"}
+            </p>
           </div>
         </aside>
 
