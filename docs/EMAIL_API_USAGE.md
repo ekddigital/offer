@@ -44,7 +44,7 @@ On success, the API responds with:
 You can also use the dedicated `/emails` endpoint:
 
 ```bash
-curl -X POST https://es.ekddigital.com/api/v1/emails \
+curl -X POST https://es.ekddigital.com/api/v1/send \
   -H "Authorization: Bearer ek_live_your_api_key_here" \
   -H "Content-Type: application/json" \
   -d '{
@@ -175,7 +175,7 @@ interface SendEmailRequest {
 **Endpoint:**
 
 ```http
-POST /api/v1/emails
+POST /api/v1/send
 ```
 
 This endpoint provides more features including attachments and scheduling:
@@ -264,7 +264,7 @@ Quotas are enforced **per recipient** via `enforceQuota(customerId, "EMAIL", rec
 ### 3.7 Email with Attachments (via /emails endpoint)
 
 ```bash
-curl -X POST https://es.ekddigital.com/api/v1/emails \
+curl -X POST https://es.ekddigital.com/api/v1/send \
   -H "Authorization: Bearer ek_live_your_api_key" \
   -H "Content-Type: application/json" \
   -d '{
@@ -285,7 +285,7 @@ curl -X POST https://es.ekddigital.com/api/v1/emails \
 ### 3.8 Email with Custom Headers
 
 ```bash
-curl -X POST https://es.ekddigital.com/api/v1/emails \
+curl -X POST https://es.ekddigital.com/api/v1/send \
   -H "Authorization: Bearer ek_live_your_api_key" \
   -H "Content-Type: application/json" \
   -d '{
@@ -467,7 +467,7 @@ The Messages API gives you a unified view of all email activity.
 **Endpoint:**
 
 ```http
-GET /api/v1/emails
+GET /api/v1/send
 ```
 
 **Query Parameters (all optional):**
@@ -486,7 +486,7 @@ GET /api/v1/emails
 **Example:**
 
 ```bash
-curl -X GET 'https://es.ekddigital.com/api/v1/emails?status=delivered&page=1&limit=20' \
+curl -X GET 'https://es.ekddigital.com/api/v1/send?status=delivered&page=1&limit=20' \
   -H "Authorization: Bearer ek_live_your_api_key"
 ```
 
@@ -521,11 +521,11 @@ curl -X GET 'https://es.ekddigital.com/api/v1/emails?status=delivered&page=1&lim
 **Endpoint:**
 
 ```http
-GET /api/v1/emails/{id}
+GET /api/v1/send/{id}
 ```
 
 ```bash
-curl -X GET https://es.ekddigital.com/api/v1/emails/clxyz123abc456 \
+curl -X GET https://es.ekddigital.com/api/v1/send/clxyz123abc456 \
   -H "Authorization: Bearer ek_live_your_api_key"
 ```
 
@@ -1455,9 +1455,9 @@ ES_SMTP_PASS="your_api_key"
 | Endpoint                       | Method | Description                   |
 | ------------------------------ | ------ | ----------------------------- |
 | `/api/v1/send`                 | POST   | Send email (unified endpoint) |
-| `/api/v1/emails`               | POST   | Send email (full featured)    |
-| `/api/v1/emails`               | GET    | List emails                   |
-| `/api/v1/emails/:id`           | GET    | Get email details             |
+| `/api/v1/send`               | POST   | Send email (full featured)    |
+| `/api/v1/send`               | GET    | List emails                   |
+| `/api/v1/send/:id`           | GET    | Get email details             |
 | `/api/v1/messages`             | GET    | List all messages             |
 | `/api/v1/messages/:id`         | GET    | Get message details           |
 | `/api/v1/api-keys`             | POST   | Create API key                |
